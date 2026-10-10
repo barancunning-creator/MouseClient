@@ -12,41 +12,48 @@ namespace MouseLauncher
 {
     public partial class MainWindow : Window
     {
-        private readonly ConfigService _configService;
-        private readonly UpdateService _updateService;
-        private readonly MinecraftLauncherService _launcherService;
-        private readonly JavaDetector _javaDetector;
+        private readonly ConfigService _configService = new();
+        private readonly UpdateService _updateService = new();
+        private readonly MinecraftLauncherService _launcherService = new();
+        private readonly JavaDetector _javaDetector = new();
 
         private LauncherConfig _config = new();
         private ClientVersionInfo _versionInfo = new();
         private JavaInfo _javaInfo = new();
         private bool _isBusy = false;
+        private bool _isInitialized = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            _configService = new ConfigService();
-            _updateService = new UpdateService();
-            _launcherService = new MinecraftLauncherService();
-            _javaDetector = new JavaDetector();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // 1. Загружаем сохраненную конфигурацию
-            _config = _configService.Load();
+            try
+            {
+                // 1. Загружаем сохраненную конфигурацию
+                _config = _configService.Load();
 
-            TxtNickname.Text = _config.Nickname;
-            SliderRam.Value = _config.RamMb;
-            UpdateRamDisplay(_config.RamMb);
-            TxtGamePath.Text = _config.MinecraftPath;
-            ChkAutoClose.IsChecked = _config.AutoClose;
+                TxtNickname.Text = _config.Nickname;
+                SliderRam.Value = _config.RamMb;
+                UpdateRamDisplay(_config.RamMb);
+                TxtGamePath.Text = _config.MinecraftPath;
+                ChkAutoClose.IsChecked = _config.AutoClose;
 
-            // 2. Детектим Java 21+
-            CheckJavaEnvironment();
+                // 2. Детектим Java 21+
+                CheckJavaEnvironment();
 
-            // 3. Проверяем обновления на GitHub
-            await CheckUpdatesAsync();
+                _isInitialized = true;
+
+                // 3. Проверяем обновления на GitHub
+                await CheckUpdatesAsync();
+            }
+            catch (Exception ex)
+            {
+                TxtStatus.Text = $"Ошибка загрузки: {ex.Message}";
+                _isInitialized = true;
+            }
         }
 
         private void CheckJavaEnvironment()
@@ -107,7 +114,7 @@ namespace MouseLauncher
 
         private void SliderRam_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (_config == null) return;
+            if (!_isInitialized || _config == null || _configService == null) return;
             int ram = (int)e.NewValue;
             // Округляем до шага 512 МБ
             ram = (ram / 512) * 512;
@@ -118,14 +125,14 @@ namespace MouseLauncher
 
         private void TxtNickname_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (_config == null) return;
+            if (!_isInitialized || _config == null || _configService == null || TxtNickname == null) return;
             _config.Nickname = TxtNickname.Text.Trim();
             _configService.Save(_config);
         }
 
         private void ChkAutoClose_Changed(object sender, RoutedEventArgs e)
         {
-            if (_config == null) return;
+            if (!_isInitialized || _config == null || _configService == null || ChkAutoClose == null) return;
             _config.AutoClose = ChkAutoClose.IsChecked == true;
             _configService.Save(_config);
         }
