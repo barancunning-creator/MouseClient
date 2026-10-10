@@ -235,10 +235,11 @@ namespace MouseLauncher.Services
                 return result;
             }
 
-            // 2. Убеждаемся, что Fabric установлен и профиль создан
+            // 2. Убеждаемся, что Fabric установлен, Fabric API и базовые библиотеки присутствуют
             statusProgress?.Report("Подготовка файлов Fabric...");
             await EnsureFabricInstalledAsync(config.MinecraftPath, versionInfo.MinecraftVersion, versionInfo.FabricVersion, statusProgress, cancellationToken);
             await EnsureFabricApiAsync(config.MinecraftPath, statusProgress, cancellationToken);
+            await EnsureBaseMinecraftLibrariesAsync(config.MinecraftPath, versionInfo.MinecraftVersion, statusProgress, cancellationToken);
             RegisterLauncherProfile(config, versionInfo.MinecraftVersion, versionInfo.FabricVersion);
 
             // 3. Формируем пути и аргументы запуска
@@ -319,34 +320,47 @@ namespace MouseLauncher.Services
                 classpaths.Add(mcJarPath);
             }
 
-            // Ищем все jar из libraries если classpath маловат
-            if (classpaths.Count < 5)
-            {
-                string libRoot = Path.Combine(config.MinecraftPath, "libraries");
-                if (Directory.Exists(libRoot))
-                {
-                    var extraJars = Directory.GetFiles(libRoot, "*.jar", SearchOption.AllDirectories);
-                    foreach (var j in extraJars)
-                    {
-                        if (!classpaths.Contains(j)) classpaths.Add(j);
-                    }
-                }
-            }
-
             string combinedCp = string.Join(";", classpaths);
             string assetsDir = Path.Combine(config.MinecraftPath, "assets");
             string uuid = Guid.NewGuid().ToString("N");
             string username = string.IsNullOrWhiteSpace(config.Nickname) ? "Player" : config.Nickname.Trim();
 
-            // Аргументы JVM
-            string jvmArgs = $"-Xmx{config.RamMb}M {config.CustomJvmArgs} -DFabricMcEmu=\"net.minecraft.client.main.Main\" -cp \"{combinedCp}\" net.fabricmc.loader.impl.launch.knot.KnotClient --username {username} --version {versionInfo.MinecraftVersion} --gameDir \"{config.MinecraftPath}\" --assetsDir \"{assetsDir}\" --assetIndex {versionInfo.MinecraftVersion} --uuid {uuid} --accessToken 0 --userType mojang";
+            // Создаем файл аргументов launch_args.txt (обход ограничения Windows на 32 КБ длины командной строки)
+            string argFilePath = Path.Combine(config.MinecraftPath, "launch_args.txt");
+            var argLines = new List<string>
+            {
+                $"-Xmx{config.RamMb}M",
+                config.CustomJvmArgs,
+                "-DFabricMcEmu=net.minecraft.client.main.Main",
+                "-cp",
+                combinedCp,
+                "net.fabricmc.loader.impl.launch.knot.KnotClient",
+                "--username",
+                username,
+                "--version",
+                versionInfo.MinecraftVersion,
+                "--gameDir",
+                config.MinecraftPath,
+                "--assetsDir",
+                assetsDir,
+                "--assetIndex",
+                versionInfo.MinecraftVersion,
+                "--uuid",
+                uuid,
+                "--accessToken",
+                "0",
+                "--userType",
+                "mojang"
+            };
+
+            await File.WriteAllLinesAsync(argFilePath, argLines, new System.Text.UTF8Encoding(false), cancellationToken);
 
             statusProgress?.Report("Запуск процесса Minecraft...");
 
             var startInfo = new ProcessStartInfo
             {
                 FileName = java.Path,
-                Arguments = jvmArgs,
+                Arguments = $"@\"{argFilePath}\"",
                 WorkingDirectory = config.MinecraftPath,
                 UseShellExecute = false,
                 CreateNoWindow = false
@@ -374,6 +388,52 @@ namespace MouseLauncher.Services
             }
 
             return result;
+        }
+
+        public async Task EnsureBaseMinecraftLibrariesAsync(string minecraftPath, string mcVersion = "1.21.11", IProgress<string>? statusProgress = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                string baseJsonPath = Path.Combine(minecraftPath, "versions", mcVersion, $"{mcVersion}.json");
+                if (!File.Exists(baseJsonPath)) return;
+
+                string baseJson = await File.ReadAllTextAsync(baseJsonPath, cancellationToken);
+                using var baseDoc = JsonDocument.Parse(baseJson);
+                if (baseDoc.RootElement.TryGetProperty("libraries", out var baseLibs))
+                {
+                    foreach (var lib in baseLibs.EnumerateArray())
+                    {
+                        if (lib.TryGetProperty("downloads", out var dl) &&
+                            dl.TryGetProperty("artifact", out var art) &&
+                            art.TryGetProperty("path", out var pathElem) &&
+                            art.TryGetProperty("url", out var urlElem))
+                        {
+                            string rel = pathElem.GetString() ?? "";
+                            string url = urlElem.GetString() ?? "";
+                            if (!string.IsNullOrEmpty(rel) && !string.IsNullOrEmpty(url))
+                            {
+                                string full = Path.Combine(minecraftPath, "libraries", rel.Replace('/', Path.DirectorySeparatorChar));
+                                if (!File.Exists(full))
+                                {
+                                    string? parent = Path.GetDirectoryName(full);
+                                    if (parent != null) Directory.CreateDirectory(parent);
+                                    statusProgress?.Report($"Загрузка библиотеки {Path.GetFileName(full)}...");
+                                    using var resp = await _httpClient.GetAsync(url, cancellationToken);
+                                    if (resp.IsSuccessStatusCode)
+                                    {
+                                        await using var fs = File.Create(full);
+                                        await resp.Content.CopyToAsync(fs, cancellationToken);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MinecraftLauncherService] Base libraries error: {ex.Message}");
+            }
         }
     }
 }
