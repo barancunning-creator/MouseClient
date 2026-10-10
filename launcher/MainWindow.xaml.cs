@@ -33,8 +33,28 @@ namespace MouseLauncher
             InitializeComponent();
         }
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateContentClip();
+        }
+
+        private void UpdateContentClip()
+        {
+            try
+            {
+                if (MainContentRoot != null && MainContentRoot.ActualWidth > 0 && MainContentRoot.ActualHeight > 0)
+                {
+                    MainContentRoot.Clip = new RectangleGeometry(
+                        new Rect(0, 0, MainContentRoot.ActualWidth, MainContentRoot.ActualHeight),
+                        19, 19);
+                }
+            }
+            catch { }
+        }
+
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateContentClip();
             // 1. Запуск красивых анимаций колец и логотипа
             StartAnimations();
 

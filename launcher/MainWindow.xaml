@@ -6,12 +6,13 @@
         xmlns:local="clr-namespace:MouseLauncher"
         mc:Ignorable="d"
         Title="MouseClient Launcher"
-        Height="590" Width="940"
+        Height="614" Width="964"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanMinimize"
+        SizeChanged="Window_SizeChanged"
         Loaded="Window_Loaded">
 
     <Window.Resources>
@@ -48,174 +49,162 @@
         </Storyboard>
     </Window.Resources>
 
-    <!-- Main Outer Window Border -->
-    <Border Background="#07080E"
+    <!-- Main Outer Window Border with Margin for Soft Rounded Glow -->
+    <Border x:Name="MainOuterBorder"
+            Margin="12"
+            Background="#07080E"
             BorderBrush="#1B2238"
             BorderThickness="1"
-            CornerRadius="20"
-            ClipToBounds="True">
+            CornerRadius="20">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="40" Direction="270" ShadowDepth="6" Color="#00E5FF" Opacity="0.22"/>
+            <DropShadowEffect BlurRadius="32" Direction="270" ShadowDepth="4" Color="#00E5FF" Opacity="0.25"/>
         </Border.Effect>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="56" /> <!-- Top Minimalist Navigation Bar -->
-                <RowDefinition Height="*" />  <!-- Tab Content Area -->
-            </Grid.RowDefinitions>
+        <!-- Clipped Inner Content Container -->
+        <Border x:Name="MainContentRoot" CornerRadius="19" ClipToBounds="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="56" /> <!-- Top Minimalist Navigation Bar -->
+                    <RowDefinition Height="*" />  <!-- Tab Content Area -->
+                </Grid.RowDefinitions>
 
-            <!-- 1. Minimalist Top Navigation Bar -->
-            <Border Grid.Row="0"
-                    Background="#0B0D17"
-                    BorderBrush="#161B2E"
-                    BorderThickness="0,0,0,1"
-                    MouseDown="TitleBar_MouseDown">
-                <Grid Margin="20,0,14,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Brand Logo + Title -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/logo.png" Width="26" Height="26" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <TextBlock Text="MOUSE" FontWeight="Black" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
-                        <TextBlock Text="CLIENT" FontWeight="Black" FontSize="16" Foreground="#00E5FF" Margin="4,0,0,0" VerticalAlignment="Center"/>
-
-                        <Border Background="#131728" CornerRadius="8" Padding="7,2" Margin="12,0,0,0" VerticalAlignment="Center" BorderBrush="#202A46" BorderThickness="1">
-                            <TextBlock x:Name="TxtTitleVersion" Text="v1.0.0 Релиз" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- Center: Clean Minimalist Tabs -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <RadioButton x:Name="TabHome" Style="{StaticResource NavTabStyle}" Content="Главная" IsChecked="True" Checked="Tab_Checked"/>
-                        <RadioButton x:Name="TabSettings" Style="{StaticResource NavTabStyle}" Content="Настройки" Checked="Tab_Checked"/>
-                        <RadioButton x:Name="TabChangelog" Style="{StaticResource NavTabStyle}" Content="Обновления" Checked="Tab_Checked"/>
-                        <RadioButton x:Name="TabAbout" Style="{StaticResource NavTabStyle}" Content="О клиенте" Checked="Tab_Checked"/>
-                    </StackPanel>
-
-                    <!-- Right: Window Control Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource WindowCtrlButton}" Content="—" Click="BtnMinimize_Click" ToolTip="Свернуть"/>
-                        <Button Style="{StaticResource WindowCloseButton}" Content="✕" Click="BtnClose_Click" ToolTip="Закрыть"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- 2. Main Content Area (Tab Views) -->
-            <Grid Grid.Row="1">
-
-                <!-- TAB 1: HOME (Cinematic Shader Background + Hero Play) -->
-                <Grid x:Name="PanelHome" Visibility="Visible" RenderTransformOrigin="0.5,0.5">
-                    <!-- Shader Minecraft Wallpaper with Cinematic Vignette -->
-                    <Image Source="/Assets/shaders_bg.jpg" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-
-                    <!-- Dark Gradient Overlays for Readability and Depth -->
-                    <Grid>
-                        <!-- Bottom Gradient -->
-                        <Border>
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Color="#0007080E" Offset="0.35"/>
-                                    <GradientStop Color="#CC07080E" Offset="0.75"/>
-                                    <GradientStop Color="#F207080E" Offset="1.0"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-
-                        <!-- Left Vignette Gradient -->
-                        <Border>
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                    <GradientStop Color="#9907080E" Offset="0"/>
-                                    <GradientStop Color="Transparent" Offset="0.5"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                    </Grid>
-
-                    <!-- Bottom Hero Content -->
-                    <Grid VerticalAlignment="Bottom" Margin="32,0,32,28">
+                <!-- 1. Minimalist Top Navigation Bar -->
+                <Border Grid.Row="0"
+                        Background="#0B0D17"
+                        BorderBrush="#161B2E"
+                        BorderThickness="0,0,0,1"
+                        CornerRadius="19,19,0,0"
+                        MouseDown="TitleBar_MouseDown">
+                    <Grid Margin="20,0,14,0">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <!-- Left: Client Info & Player Quick Chips -->
-                        <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
-                            <!-- Glow Tag -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Ellipse Width="8" Height="8" Fill="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center">
-                                    <Ellipse.Effect>
-                                        <DropShadowEffect BlurRadius="12" Color="#00E5FF" Opacity="0.9"/>
-                                    </Ellipse.Effect>
-                                </Ellipse>
-                                <TextBlock Text="FABRIC 1.21.11 • БЕСПЛАТНЫЙ РЕЛИЗ" FontSize="11" FontWeight="Black" Foreground="#00E5FF"/>
-                            </StackPanel>
+                        <!-- Brand Logo + Title -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="/Assets/logo.png" Width="26" Height="26" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="MOUSE" FontWeight="Black" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                            <TextBlock Text="CLIENT" FontWeight="Black" FontSize="16" Foreground="#00E5FF" Margin="4,0,0,0" VerticalAlignment="Center"/>
 
-                            <!-- Big Futuristic Title -->
-                            <TextBlock Text="MOUSE CLIENT" FontSize="36" FontWeight="Black" Foreground="#FFFFFF" Margin="0,0,0,4">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="25" Color="#000000" Opacity="0.8"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-
-                            <TextBlock Text="Самая лучшая модификация для доминирования"
-                                       FontSize="13" FontWeight="SemiBold" Foreground="#94A3B8" Margin="0,0,0,16"/>
-
-                            <!-- Player & RAM Chips with Modern Rounding -->
-                            <StackPanel Orientation="Horizontal">
-                                <!-- Nick Chip -->
-                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7" Margin="0,0,10,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="👤 " FontSize="12" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="TxtHomeNickname" Text="MouseUser" FontSize="12" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- RAM Chip -->
-                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7" Margin="0,0,10,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="⚡ " FontSize="12" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="TxtHomeRam" Text="4096 МБ" FontSize="12" FontWeight="Bold" Foreground="#00E5FF" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Status Chip -->
-                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7">
-                                    <TextBlock x:Name="TxtHomeStatus" Text="Готов к игре" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
+                            <Border Background="#131728" CornerRadius="8" Padding="7,2" Margin="12,0,0,0" VerticalAlignment="Center" BorderBrush="#202A46" BorderThickness="1">
+                                <TextBlock x:Name="TxtTitleVersion" Text="v1.0.0 Релиз" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
+                            </Border>
                         </StackPanel>
 
-                        <!-- Right: High-Tech Cyber Glass Play Button -->
-                        <Button x:Name="BtnPlay" Grid.Column="1" Style="{StaticResource PlayButtonStyle}"
-                                Width="220" Height="56" Click="BtnPlay_Click" VerticalAlignment="Bottom">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                        <!-- Center: Clean Minimalist Tabs -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <RadioButton x:Name="TabHome" Style="{StaticResource NavTabStyle}" Content="Главная" IsChecked="True" Checked="Tab_Checked"/>
+                            <RadioButton x:Name="TabSettings" Style="{StaticResource NavTabStyle}" Content="Настройки" Checked="Tab_Checked"/>
+                            <RadioButton x:Name="TabChangelog" Style="{StaticResource NavTabStyle}" Content="Обновления" Checked="Tab_Checked"/>
+                            <RadioButton x:Name="TabAbout" Style="{StaticResource NavTabStyle}" Content="О клиенте" Checked="Tab_Checked"/>
+                        </StackPanel>
 
-                                <!-- Left Glowing Play Icon Capsule -->
-                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="10"
-                                        Background="#2600E5FF" BorderBrush="#5000E5FF" BorderThickness="1"
-                                        Margin="0,0,14,0" VerticalAlignment="Center">
-                                    <TextBlock Text="▶" FontSize="13" FontWeight="Black" Foreground="#00E5FF"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
-                                </Border>
-
-                                <!-- Right Label -->
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="ИГРАТЬ" FontSize="16" FontWeight="Black" Foreground="#FFFFFF"/>
-                                    <TextBlock Text="БЕСПЛАТНЫЙ РЕЛИЗ" FontSize="10" FontWeight="Bold" Foreground="#38BDF8"/>
-                                </StackPanel>
-                            </Grid>
-                        </Button>
+                        <!-- Right: Window Control Buttons -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource WindowCtrlButton}" Content="—" Click="BtnMinimize_Click" ToolTip="Свернуть"/>
+                            <Button Style="{StaticResource WindowCloseButton}" Content="✕" Click="BtnClose_Click" ToolTip="Закрыть"/>
+                        </StackPanel>
                     </Grid>
-                </Grid>
+                </Border>
+
+                <!-- 2. Main Content Area (Tab Views) -->
+                <Grid Grid.Row="1">
+
+                    <!-- TAB 1: HOME (Cinematic Shader Background + Hero Play) -->
+                    <Grid x:Name="PanelHome" Visibility="Visible" RenderTransformOrigin="0.5,0.5">
+                        <!-- Shader Minecraft Wallpaper with Cinematic Vignette -->
+                        <Image Source="/Assets/shaders_bg.jpg" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                        <!-- Dark Gradient Overlays for Readability and Depth -->
+                        <Grid>
+                            <!-- Bottom Gradient -->
+                            <Border>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#0007080E" Offset="0.35"/>
+                                        <GradientStop Color="#CC07080E" Offset="0.75"/>
+                                        <GradientStop Color="#F207080E" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+
+                            <!-- Left Vignette Gradient -->
+                            <Border>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#9907080E" Offset="0"/>
+                                        <GradientStop Color="Transparent" Offset="0.5"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Grid>
+
+                        <!-- Bottom Hero Content -->
+                        <Grid VerticalAlignment="Bottom" Margin="32,0,32,28">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Left: Client Info & Player Quick Chips -->
+                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+                                <!-- Glow Tag -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                    <Ellipse Width="8" Height="8" Fill="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center">
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect BlurRadius="12" Color="#00E5FF" Opacity="0.9"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <TextBlock Text="FABRIC 1.21.11 • БЕСПЛАТНЫЙ РЕЛИЗ" FontSize="11" FontWeight="Black" Foreground="#00E5FF"/>
+                                </StackPanel>
+
+                                <!-- Big Futuristic Title -->
+                                <TextBlock Text="MOUSE CLIENT" FontSize="36" FontWeight="Black" Foreground="#FFFFFF" Margin="0,0,0,4">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect BlurRadius="25" Color="#000000" Opacity="0.8"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+
+                                <TextBlock Text="Самая лучшая модификация для доминирования"
+                                           FontSize="13" FontWeight="SemiBold" Foreground="#94A3B8" Margin="0,0,0,16"/>
+
+                                <!-- Player & RAM Chips with Modern Rounding -->
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- Nick Chip -->
+                                    <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7" Margin="0,0,10,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="👤 " FontSize="12" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtHomeNickname" Text="MouseUser" FontSize="12" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- RAM Chip -->
+                                    <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7" Margin="0,0,10,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="⚡ " FontSize="12" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtHomeRam" Text="4096 МБ" FontSize="12" FontWeight="Bold" Foreground="#00E5FF" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Status Chip -->
+                                    <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7">
+                                        <TextBlock x:Name="TxtHomeStatus" Text="Готов к игре" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Right: Minimalist Neon Play Button -->
+                            <Button x:Name="BtnPlay" Grid.Column="1" Style="{StaticResource PlayButtonStyle}"
+                                    Width="180" Height="48" Click="BtnPlay_Click" VerticalAlignment="Bottom">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="▶" FontSize="13" FontWeight="Black" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="ИГРАТЬ" FontSize="16" FontWeight="Black" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Grid>
 
                 <!-- TAB 2: SETTINGS (Minimalist Dark Glass) -->
                 <Grid x:Name="PanelSettings" Visibility="Collapsed" Margin="32,24" RenderTransformOrigin="0.5,0.5">
@@ -497,5 +486,6 @@
                 </Grid>
             </Border>
         </Grid>
+        </Border>
     </Border>
 </Window>
