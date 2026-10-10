@@ -97,10 +97,56 @@ namespace MouseLauncher
         {
             if (!_isInitialized || PanelHome == null) return;
 
-            PanelHome.Visibility = TabHome.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-            PanelSettings.Visibility = TabSettings.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-            PanelChangelog.Visibility = TabChangelog.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-            PanelAbout.Visibility = TabAbout.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+            FrameworkElement? target = null;
+            if (TabHome.IsChecked == true) target = PanelHome;
+            else if (TabSettings.IsChecked == true) target = PanelSettings;
+            else if (TabChangelog.IsChecked == true) target = PanelChangelog;
+            else if (TabAbout.IsChecked == true) target = PanelAbout;
+
+            if (target != null)
+            {
+                SwitchToTab(target);
+            }
+        }
+
+        private void SwitchToTab(FrameworkElement targetPanel)
+        {
+            var panels = new FrameworkElement[] { PanelHome, PanelSettings, PanelChangelog, PanelAbout };
+            foreach (var p in panels)
+            {
+                if (p == targetPanel)
+                {
+                    p.Visibility = Visibility.Visible;
+
+                    // Плавная анимация проявления (Fade-in)
+                    var fadeIn = new DoubleAnimation
+                    {
+                        From = 0.0,
+                        To = 1.0,
+                        Duration = TimeSpan.FromMilliseconds(220),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                    };
+
+                    // Плавный подъем со смещением по оси Y на 14 пикселей (Slide-up)
+                    var translate = new TranslateTransform(0, 14);
+                    p.RenderTransform = translate;
+
+                    var slideUp = new DoubleAnimation
+                    {
+                        From = 14.0,
+                        To = 0.0,
+                        Duration = TimeSpan.FromMilliseconds(220),
+                        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                    };
+
+                    p.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+                    translate.BeginAnimation(TranslateTransform.YProperty, slideUp);
+                }
+                else
+                {
+                    p.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void CheckJavaEnvironment()
@@ -132,17 +178,17 @@ namespace MouseLauncher
             {
                 _versionInfo = await _updateService.CheckForUpdatesAsync();
 
-                TxtTitleVersion.Text = $"v{_versionInfo.Version}";
+                TxtTitleVersion.Text = $"v{_versionInfo.Version} Релиз";
                 ItemsChangelog.ItemsSource = _versionInfo.Changelog;
 
                 bool isInstalled = _updateService.IsClientInstalled(_config.MinecraftPath, _versionInfo);
                 if (isInstalled)
                 {
-                    TxtHomeStatus.Text = $"Клиент v{_versionInfo.Version} готов";
+                    TxtHomeStatus.Text = $"Релиз v{_versionInfo.Version} готов";
                 }
                 else
                 {
-                    TxtHomeStatus.Text = $"Обновление v{_versionInfo.Version}";
+                    TxtHomeStatus.Text = $"Релиз v{_versionInfo.Version}";
                 }
             }
             catch

@@ -52,7 +52,7 @@
     <Border Background="#07080E"
             BorderBrush="#1B2238"
             BorderThickness="1"
-            CornerRadius="18"
+            CornerRadius="20"
             ClipToBounds="True">
         <Border.Effect>
             <DropShadowEffect BlurRadius="40" Direction="270" ShadowDepth="6" Color="#00E5FF" Opacity="0.22"/>
@@ -83,8 +83,8 @@
                         <TextBlock Text="MOUSE" FontWeight="Black" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                         <TextBlock Text="CLIENT" FontWeight="Black" FontSize="16" Foreground="#00E5FF" Margin="4,0,0,0" VerticalAlignment="Center"/>
 
-                        <Border Background="#131728" CornerRadius="6" Padding="6,2" Margin="12,0,0,0" VerticalAlignment="Center" BorderBrush="#202A46" BorderThickness="1">
-                            <TextBlock x:Name="TxtTitleVersion" Text="v1.0.0" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
+                        <Border Background="#131728" CornerRadius="8" Padding="7,2" Margin="12,0,0,0" VerticalAlignment="Center" BorderBrush="#202A46" BorderThickness="1">
+                            <TextBlock x:Name="TxtTitleVersion" Text="v1.0.0 Релиз" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
                         </Border>
                     </StackPanel>
 
@@ -108,7 +108,7 @@
             <Grid Grid.Row="1">
 
                 <!-- TAB 1: HOME (Cinematic Shader Background + Hero Play) -->
-                <Grid x:Name="PanelHome" Visibility="Visible">
+                <Grid x:Name="PanelHome" Visibility="Visible" RenderTransformOrigin="0.5,0.5">
                     <!-- Shader Minecraft Wallpaper with Cinematic Vignette -->
                     <Image Source="/Assets/shaders_bg.jpg" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
 
@@ -152,7 +152,7 @@
                                         <DropShadowEffect BlurRadius="12" Color="#00E5FF" Opacity="0.9"/>
                                     </Ellipse.Effect>
                                 </Ellipse>
-                                <TextBlock Text="FABRIC 1.21.11 • ЧИТ КЛИЕНТ ГОТОВ" FontSize="11" FontWeight="Black" Foreground="#00E5FF"/>
+                                <TextBlock Text="FABRIC 1.21.11 • БЕСПЛАТНЫЙ РЕЛИЗ" FontSize="11" FontWeight="Black" Foreground="#00E5FF"/>
                             </StackPanel>
 
                             <!-- Big Futuristic Title -->
@@ -162,13 +162,13 @@
                                 </TextBlock.Effect>
                             </TextBlock>
 
-                            <TextBlock Text="Плавный аимбот Silent Snap, обходы античитов и максимальный FPS"
+                            <TextBlock Text="Самая лучшая модификация для доминирования"
                                        FontSize="13" FontWeight="SemiBold" Foreground="#94A3B8" Margin="0,0,0,16"/>
 
-                            <!-- Player & RAM Chips -->
+                            <!-- Player & RAM Chips with Modern Rounding -->
                             <StackPanel Orientation="Horizontal">
                                 <!-- Nick Chip -->
-                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="8" Padding="12,6" Margin="0,0,10,0">
+                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7" Margin="0,0,10,0">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="👤 " FontSize="12" VerticalAlignment="Center"/>
                                         <TextBlock x:Name="TxtHomeNickname" Text="MouseUser" FontSize="12" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
@@ -176,7 +176,7 @@
                                 </Border>
 
                                 <!-- RAM Chip -->
-                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="8" Padding="12,6" Margin="0,0,10,0">
+                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7" Margin="0,0,10,0">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="⚡ " FontSize="12" VerticalAlignment="Center"/>
                                         <TextBlock x:Name="TxtHomeRam" Text="4096 МБ" FontSize="12" FontWeight="Bold" Foreground="#00E5FF" VerticalAlignment="Center"/>
@@ -184,26 +184,42 @@
                                 </Border>
 
                                 <!-- Status Chip -->
-                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="8" Padding="12,6">
+                                <Border Background="#D90E111C" BorderBrush="#252F4A" BorderThickness="1" CornerRadius="12" Padding="14,7">
                                     <TextBlock x:Name="TxtHomeStatus" Text="Готов к игре" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" VerticalAlignment="Center"/>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
 
-                        <!-- Right: Massive Neon Play Button -->
+                        <!-- Right: High-Tech Cyber Glass Play Button -->
                         <Button x:Name="BtnPlay" Grid.Column="1" Style="{StaticResource PlayButtonStyle}"
-                                Width="210" Height="52" Click="BtnPlay_Click" VerticalAlignment="Bottom">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="▶ " FontSize="14" FontWeight="Black" Margin="0,0,4,0"/>
-                                <TextBlock Text="ИГРАТЬ" FontSize="17" FontWeight="Black"/>
-                            </StackPanel>
+                                Width="220" Height="56" Click="BtnPlay_Click" VerticalAlignment="Bottom">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left Glowing Play Icon Capsule -->
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="10"
+                                        Background="#2600E5FF" BorderBrush="#5000E5FF" BorderThickness="1"
+                                        Margin="0,0,14,0" VerticalAlignment="Center">
+                                    <TextBlock Text="▶" FontSize="13" FontWeight="Black" Foreground="#00E5FF"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                                </Border>
+
+                                <!-- Right Label -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="ИГРАТЬ" FontSize="16" FontWeight="Black" Foreground="#FFFFFF"/>
+                                    <TextBlock Text="БЕСПЛАТНЫЙ РЕЛИЗ" FontSize="10" FontWeight="Bold" Foreground="#38BDF8"/>
+                                </StackPanel>
+                            </Grid>
                         </Button>
                     </Grid>
                 </Grid>
 
                 <!-- TAB 2: SETTINGS (Minimalist Dark Glass) -->
-                <Grid x:Name="PanelSettings" Visibility="Collapsed" Margin="32,24">
-                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="16" Padding="28,24">
+                <Grid x:Name="PanelSettings" Visibility="Collapsed" Margin="32,24" RenderTransformOrigin="0.5,0.5">
+                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="20" Padding="28,24">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel MaxWidth="620" HorizontalAlignment="Left">
                                 <TextBlock Text="НАСТРОЙКИ ЗАПУСКА" FontWeight="Black" FontSize="18" Foreground="#FFFFFF" Margin="0,0,0,6"/>
@@ -230,11 +246,11 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="TxtGamePath" Grid.Column="0" Style="{StaticResource ModernTextBox}" IsReadOnly="True" FontSize="11" Margin="0,0,10,0"/>
-                                    <Button Grid.Column="1" Style="{StaticResource WindowCtrlButton}" Content="Обзор" Width="Auto" Padding="14,0" Height="38" Background="#161B2E" Foreground="#FFFFFF" Click="BtnBrowsePath_Click"/>
+                                    <Button Grid.Column="1" Style="{StaticResource WindowCtrlButton}" Content="Обзор" Width="Auto" Padding="16,0" Height="38" Background="#161B2E" Foreground="#FFFFFF" Click="BtnBrowsePath_Click"/>
                                 </Grid>
 
                                 <!-- Java Status -->
-                                <Border Background="#090B12" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="10" Padding="14,12" Margin="0,0,0,20">
+                                <Border Background="#090B12" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="12" Padding="14,12" Margin="0,0,0,20">
                                     <StackPanel Orientation="Horizontal">
                                         <Ellipse x:Name="ElpJavaDot" Width="9" Height="9" Fill="#00E5FF" Margin="0,0,10,0" VerticalAlignment="Center"/>
                                         <TextBlock x:Name="TxtJavaStatus" Text="Java 21 найдена" FontSize="13" FontWeight="SemiBold" Foreground="#E2E8F0" VerticalAlignment="Center"/>
@@ -251,24 +267,42 @@
                 </Grid>
 
                 <!-- TAB 3: CHANGELOG (Minimalist Cards) -->
-                <Grid x:Name="PanelChangelog" Visibility="Collapsed" Margin="32,24">
-                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="16" Padding="28,24">
+                <Grid x:Name="PanelChangelog" Visibility="Collapsed" Margin="32,24" RenderTransformOrigin="0.5,0.5">
+                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="20" Padding="28,24">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                            <StackPanel Grid.Row="0" Margin="0,0,0,16">
                                 <TextBlock Text="СПИСОК ОБНОВЛЕНИЙ" FontWeight="Black" FontSize="18" Foreground="#FFFFFF" Margin="0,0,0,4"/>
-                                <TextBlock Text="Актуальные изменения версии MouseClient" FontSize="13" Foreground="#64748B"/>
+                                <TextBlock Text="Актуальные изменения и история релизов MouseClient" FontSize="13" Foreground="#64748B" Margin="0,0,0,14"/>
+
+                                <!-- Release Highlights Card -->
+                                <Border Background="#12182E" BorderBrush="#2563EB" BorderThickness="1" CornerRadius="14" Padding="16,12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Border Background="#7C3AED" CornerRadius="8" Padding="10,4" Margin="0,0,12,0">
+                                                <TextBlock Text="РЕЛИЗ" FontSize="11" FontWeight="Black" Foreground="#FFFFFF"/>
+                                            </Border>
+                                            <TextBlock Text="MouseClient v1.0.0" FontSize="15" FontWeight="Black" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="Официальная версия • Бесплатно" FontSize="12" FontWeight="SemiBold" Foreground="#00E5FF" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
                             </StackPanel>
 
                             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                 <ItemsControl x:Name="ItemsChangelog">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Background="#090B12" BorderBrush="#1A2033" BorderThickness="1" CornerRadius="10" Padding="16,12" Margin="0,0,0,10">
+                                            <Border Background="#090B12" BorderBrush="#1A2033" BorderThickness="1" CornerRadius="12" Padding="16,12" Margin="0,0,0,10">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
@@ -287,19 +321,19 @@
                 </Grid>
 
                 <!-- TAB 4: ABOUT & SHORTCUTS -->
-                <Grid x:Name="PanelAbout" Visibility="Collapsed" Margin="32,24">
-                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="16" Padding="28,24">
+                <Grid x:Name="PanelAbout" Visibility="Collapsed" Margin="32,24" RenderTransformOrigin="0.5,0.5">
+                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="20" Padding="28,24">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="520">
                             <Image Source="/Assets/logo.png" Width="64" Height="64" Margin="0,0,0,14" HorizontalAlignment="Center"/>
                             <TextBlock Text="MOUSE CLIENT" FontSize="22" FontWeight="Black" Foreground="#FFFFFF" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-                            <TextBlock Text="Приватный чит-клиент нового поколения для Minecraft 1.21.11 Fabric" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,0,0,24" TextAlignment="Center"/>
+                            <TextBlock Text="Бесплатный чит-клиент нового поколения для Minecraft 1.21.11 Fabric" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,0,0,24" TextAlignment="Center"/>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="📁 Папка mods" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="36"
+                                <Button Content="📁 Папка mods" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="38"
                                         Background="#15192B" Foreground="#FFFFFF" Click="BtnOpenMods_Click" Margin="0,0,12,0"/>
-                                <Button Content="📁 Папка .minecraft" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="36"
+                                <Button Content="📁 Папка .minecraft" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="38"
                                         Background="#15192B" Foreground="#FFFFFF" Click="BtnOpenMinecraft_Click" Margin="0,0,12,0"/>
-                                <Button Content="🌐 GitHub" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="36"
+                                <Button Content="🌐 GitHub" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="38"
                                         Background="#15192B" Foreground="#00E5FF" Click="BtnOpenGithub_Click"/>
                             </StackPanel>
                         </StackPanel>
@@ -311,7 +345,7 @@
             <Border x:Name="StartupSplashOverlay"
                     Grid.RowSpan="2"
                     Background="#FA07080E"
-                    CornerRadius="18"
+                    CornerRadius="20"
                     Visibility="Visible">
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                     <StackPanel HorizontalAlignment="Center">
@@ -387,7 +421,7 @@
             <Border x:Name="GameLaunchOverlay"
                     Grid.RowSpan="2"
                     Background="#F207080E"
-                    CornerRadius="18"
+                    CornerRadius="20"
                     Opacity="0"
                     Visibility="Collapsed">
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center">

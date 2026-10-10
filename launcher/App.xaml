@@ -30,16 +30,28 @@
             <GradientStop Color="#06B6D4" Offset="1.0" />
         </LinearGradientBrush>
 
-        <LinearGradientBrush x:Key="PlayButtonGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#7C3AED" Offset="0.0" />
-            <GradientStop Color="#2563EB" Offset="0.5" />
-            <GradientStop Color="#00D2FF" Offset="1.0" />
+        <LinearGradientBrush x:Key="PlayBorderBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#C084FC" Offset="0.0" />
+            <GradientStop Color="#38BDF8" Offset="0.5" />
+            <GradientStop Color="#00E5FF" Offset="1.0" />
         </LinearGradientBrush>
 
-        <LinearGradientBrush x:Key="PlayButtonHoverGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#9333EA" Offset="0.0" />
-            <GradientStop Color="#3B82F6" Offset="0.5" />
-            <GradientStop Color="#38BDF8" Offset="1.0" />
+        <LinearGradientBrush x:Key="PlayBorderHoverBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E879F9" Offset="0.0" />
+            <GradientStop Color="#60A5FA" Offset="0.5" />
+            <GradientStop Color="#22D3EE" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="PlayBgDarkGlass" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F0150F29" Offset="0.0" />
+            <GradientStop Color="#F009132B" Offset="0.55" />
+            <GradientStop Color="#F0032036" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="PlayBgHoverLuminous" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#8B5CF6" Offset="0.0" />
+            <GradientStop Color="#2563EB" Offset="0.5" />
+            <GradientStop Color="#06B6D4" Offset="1.0" />
         </LinearGradientBrush>
 
         <!-- Navigation Tab Style -->
@@ -56,7 +68,7 @@
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="border"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="8"
+                                CornerRadius="10"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
@@ -95,7 +107,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
+                                CornerRadius="12">
                             <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -112,45 +124,73 @@
             </Setter>
         </Style>
 
-        <!-- Glowing Neon Play Button -->
+        <!-- High-Tech Neon Glass Play Button -->
         <Style x:Key="PlayButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PlayButtonGradient}" />
+            <Setter Property="Background" Value="{StaticResource PlayBgDarkGlass}" />
+            <Setter Property="BorderBrush" Value="{StaticResource PlayBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1.5" />
             <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="Black" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="26,12" />
+            <Setter Property="Padding" Value="16,8" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="10"
-                                Padding="{TemplateBinding Padding}">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="16"
+                                Padding="{TemplateBinding Padding}"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
+                            </Border.RenderTransform>
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="24" Direction="270" ShadowDepth="3" Color="#00E5FF" Opacity="0.45" />
+                                <DropShadowEffect BlurRadius="28" Direction="270" ShadowDepth="2" Color="#00E5FF" Opacity="0.4" />
                             </Border.Effect>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Grid>
+                                <!-- Subtle Top Gloss Sheen -->
+                                <Border Height="18" VerticalAlignment="Top" CornerRadius="14,14,0,0">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#25FFFFFF" Offset="0.0" />
+                                            <GradientStop Color="Transparent" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource PlayButtonHoverGradient}" />
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource PlayBgHoverLuminous}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PlayBorderHoverBrush}" />
+                                <Setter TargetName="border" Property="BorderThickness" Value="2" />
+                                <Setter TargetName="border" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.02" ScaleY="1.02" />
+                                    </Setter.Value>
+                                </Setter>
                                 <Setter TargetName="border" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect BlurRadius="32" Direction="270" ShadowDepth="4" Color="#00E5FF" Opacity="0.75" />
+                                        <DropShadowEffect BlurRadius="38" Direction="270" ShadowDepth="3" Color="#00E5FF" Opacity="0.8" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="RenderTransform">
                                     <Setter.Value>
-                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97" CenterX="100" CenterY="25"/>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="18" Direction="270" ShadowDepth="1" Color="#00E5FF" Opacity="0.45" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Opacity" Value="0.5" />
+                                <Setter TargetName="border" Property="Opacity" Value="0.45" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -170,7 +210,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="bg" Background="{TemplateBinding Background}" CornerRadius="4">
+                        <Border x:Name="bg" Background="{TemplateBinding Background}" CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
