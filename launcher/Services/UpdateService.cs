@@ -170,88 +170,110 @@ namespace MouseLauncher.Services
             string targetFile = Path.Combine(modsDir, info.JarName);
             string tempFile = targetFile + ".download.tmp";
 
-            // Если есть локальный скомпилированный jar (режим разработки / оффлайн копирования)
+            // Локальный скомпилированный билд разработчика
             string localDevBuild = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "build", "libs", "MouseClient-1.0.0.jar");
             if (!File.Exists(localDevBuild))
             {
                 localDevBuild = @"d:\MouseClient\build\libs\MouseClient-1.0.0.jar";
             }
 
-            // Если сетевая ссылка пустая или недоступна, но есть локальный файл
-            bool useLocalDev = string.IsNullOrWhiteSpace(info.DownloadUrl) || !info.DownloadUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase);
+            bool downloadedFromNetwork = false;
 
-            if (useLocalDev && File.Exists(localDevBuild))
+            // Попытка загрузить из сети
+            if (!string.IsNullOrWhiteSpace(info.DownloadUrl) && info.DownloadUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
-                progress?.Report(new UpdateProgressReport
+                try
                 {
-                    Percentage = 50,
-                    StatusMessage = "Копирование локального билда клиента..."
-                });
-
-                CleanupOldJars(modsDir, info.JarName);
-                File.Copy(localDevBuild, targetFile, true);
-
-                progress?.Report(new UpdateProgressReport
-                {
-                    Percentage = 100,
-                    StatusMessage = "Установка завершена!"
-                });
-                return;
-            }
-
-            // Загрузка из сети
-            if (string.IsNullOrWhiteSpace(info.DownloadUrl))
-            {
-                throw new InvalidOperationException("Не указан URL для загрузки файла клиента.");
-            }
-
-            progress?.Report(new UpdateProgressReport
-            {
-                Percentage = 0,
-                StatusMessage = "Подключение к серверу загрузки..."
-            });
-
-            using var response = await _httpClient.GetAsync(info.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            response.EnsureSuccessStatusCode();
-
-            long totalBytes = response.Content.Headers.ContentLength ?? -1L;
-
-            await using (var stream = await response.Content.ReadAsStreamAsync(cancellationToken))
-            await using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true))
-            {
-                byte[] buffer = new byte[81920];
-                long totalRead = 0;
-                int bytesRead;
-                var startTime = DateTime.UtcNow;
-                var lastReportTime = startTime;
-                long bytesSinceLastReport = 0;
-
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
-                {
-                    await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
-                    totalRead += bytesRead;
-                    bytesSinceLastReport += bytesRead;
-
-                    var now = DateTime.UtcNow;
-                    var elapsedSinceLastReport = (now - lastReportTime).TotalSeconds;
-
-                    if (elapsedSinceLastReport >= 0.1 || totalRead == totalBytes)
+                    progress?.Report(new UpdateProgressReport
                     {
-                        double speedKb = (bytesSinceLastReport / 1024.0) / (elapsedSinceLastReport > 0 ? elapsedSinceLastReport : 0.1);
-                        double percentage = totalBytes > 0 ? ((double)totalRead / totalBytes) * 100.0 : 0.0;
+                        Percentage = 0,
+                        StatusMessage = "Подключение к серверу загрузки..."
+                    });
 
-                        progress?.Report(new UpdateProgressReport
+                    using var response = await _httpClient.GetAsync(info.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        long totalBytes = response.Content.Headers.ContentLength ?? -1L;
+
+                        await using (var stream = await response.Content.ReadAsStreamAsync(cancellationToken))
+                        await using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true))
                         {
-                            Percentage = percentage,
-                            BytesReceived = totalRead,
-                            TotalBytes = totalBytes,
-                            SpeedKiloBytesPerSec = speedKb,
-                            StatusMessage = $"Скачивание: {totalRead / 1024 / 1024} МБ / {(totalBytes > 0 ? (totalBytes / 1024 / 1024).ToString() : "?")} МБ ({speedKb:F0} КБ/с)"
-                        });
+                            byte[] buffer = new byte[81920];
+                            long totalRead = 0;
+                            int bytesRead;
+                            var startTime = DateTime.UtcNow;
+                            var lastReportTime = startTime;
+                            long bytesSinceLastReport = 0;
 
-                        lastReportTime = now;
-                        bytesSinceLastReport = 0;
+                            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+                            {
+                                await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                                totalRead += bytesRead;
+                                bytesSinceLastReport += bytesRead;
+
+                                var now = DateTime.UtcNow;
+                                var elapsedSinceLastReport = (now - lastReportTime).TotalSeconds;
+
+                                if (elapsedSinceLastReport >= 0.1 || totalRead == totalBytes)
+                                {
+                                    double speedKb = (bytesSinceLastReport / 1024.0) / (elapsedSinceLastReport > 0 ? elapsedSinceLastReport : 0.1);
+                                    double percentage = totalBytes > 0 ? ((double)totalRead / totalBytes) * 100.0 : 0.0;
+
+                                    progress?.Report(new UpdateProgressReport
+                                    {
+                                        Percentage = percentage,
+                                        BytesReceived = totalRead,
+                                        TotalBytes = totalBytes,
+                                        SpeedKiloBytesPerSec = speedKb,
+                                        StatusMessage = $"Скачивание: {totalRead / 1024 / 1024} МБ / {(totalBytes > 0 ? (totalBytes / 1024 / 1024).ToString() : "?")} МБ ({speedKb:F0} КБ/с)"
+                                    });
+
+                                    lastReportTime = now;
+                                    bytesSinceLastReport = 0;
+                                }
+                            }
+                        }
+
+                        downloadedFromNetwork = true;
                     }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[UpdateService] Server returned status: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[UpdateService] Network download error: {ex.Message}");
+                }
+            }
+
+            // Если из сети скачать не удалось, но локальный билд найден на диске — устанавливаем его!
+            if (!downloadedFromNetwork)
+            {
+                if (File.Exists(localDevBuild))
+                {
+                    progress?.Report(new UpdateProgressReport
+                    {
+                        Percentage = 50,
+                        StatusMessage = "Установка из локального билда клиента..."
+                    });
+
+                    CleanupOldJars(modsDir, info.JarName);
+                    File.Copy(localDevBuild, targetFile, true);
+
+                    progress?.Report(new UpdateProgressReport
+                    {
+                        Percentage = 100,
+                        StatusMessage = "Клиент успешно установлен!"
+                    });
+                    return;
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        $"Файл клиента не найден по ссылке:\n{info.DownloadUrl}\n(Код 404 Not Found).\n\n" +
+                        "Причина: Релиз еще не опубликован на GitHub Releases, либо репозиторий закрыт (Private).\n" +
+                        "Сделайте репозиторий публичным (Public) в настройках GitHub или создайте Release 'v1.0.0'.");
                 }
             }
 
