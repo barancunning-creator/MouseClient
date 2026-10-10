@@ -1,0 +1,438 @@
+{
+  "com.mouseclient.modules.impl.combat.LuaRotationRegistry": {
+    "fields": {},
+    "methods": {
+      "п": [
+        "isRegistered"
+      ],
+      "method781": [
+        "isRegistered"
+      ],
+      "С": [
+        "isHorizontallyAligned",
+        "invoke"
+      ],
+      "method782": [
+        "isHorizontallyAligned"
+      ],
+      "8в": [
+        "unregisterAll"
+      ],
+      "method783": [
+        "unregisterAll"
+      ],
+      "method784": [
+        "isHorizontallyAligned"
+      ],
+      "method785": [
+        "invoke"
+      ],
+      "7": [
+        "unregister"
+      ],
+      "method786": [
+        "unregister"
+      ],
+      "8": [
+        "register"
+      ],
+      "method787": [
+        "register"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.ColorValue": {
+    "fields": {
+      "_": "WHITE",
+      "INSTANCE": "WHITE",
+      "В": "LIGHT_GRAY",
+      "INSTANCE2": "LIGHT_GRAY",
+      "в": "GRAY",
+      "INSTANCE3": "GRAY",
+      "Т": "DARK_GRAY",
+      "INSTANCE4": "DARK_GRAY",
+      "Ч": "BLACK",
+      "INSTANCE5": "BLACK",
+      "1": "RED",
+      "INSTANCE6": "RED",
+      "т": "PINK",
+      "INSTANCE7": "PINK",
+      "й": "ORANGE",
+      "INSTANCE8": "ORANGE",
+      "З": "YELLOW",
+      "INSTANCE9": "YELLOW",
+      "ю": "GREEN",
+      "INSTANCE10": "GREEN",
+      "5": "MAGENTA",
+      "INSTANCE11": "MAGENTA",
+      "н": "CYAN",
+      "INSTANCE12": "CYAN",
+      "Ь": "BLUE",
+      "INSTANCE13": "BLUE"
+    },
+    "methods": {
+      "Я": [
+        "blue"
+      ],
+      "method3655": [
+        "blue"
+      ],
+      "х": [
+        "green"
+      ],
+      "method3656": [
+        "green"
+      ],
+      "Э": [
+        "argb"
+      ],
+      "method3657": [
+        "argb"
+      ],
+      "ж": [
+        "red"
+      ],
+      "method3658": [
+        "red"
+      ],
+      "诶": [
+        "alpha"
+      ],
+      "method3659": [
+        "alpha"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.Timer": {
+    "fields": {},
+    "methods": {
+      "O": [
+        "hasElapsed"
+      ],
+      "method3660": [
+        "hasElapsed"
+      ],
+      "Oв": [
+        "reset"
+      ],
+      "method3661": [
+        "reset"
+      ],
+      "Р": [
+        "elapsedMillis"
+      ],
+      "method3662": [
+        "elapsedMillis"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.StatusEffectView": {
+    "fields": {},
+    "methods": {
+      "х": [
+        "getEffect"
+      ],
+      "method3663": [
+        "getEffect"
+      ],
+      "ок": [
+        "getSecondaryLabel"
+      ],
+      "method3664": [
+        "getSecondaryLabel"
+      ],
+      "о_": [
+        "getPrimaryLabel"
+      ],
+      "method3665": [
+        "getPrimaryLabel"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.MatrixView": {
+    "fields": {},
+    "methods": {
+      "Е": [
+        "translate",
+        "rotate"
+      ],
+      "method3666": [
+        "translate"
+      ],
+      "method3667": [
+        "rotate"
+      ],
+      "ж": [
+        "getMatrices",
+        "rotateY"
+      ],
+      "method3668": [
+        "getMatrices"
+      ],
+      "method3669": [
+        "rotateY"
+      ],
+      "6": [
+        "scale",
+        "rotateX"
+      ],
+      "method3670": [
+        "scale"
+      ],
+      "4": [
+        "rotateZ"
+      ],
+      "method3671": [
+        "rotateZ"
+      ],
+      "method3672": [
+        "rotateX"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.Vector3": {
+    "fields": {
+      "Н": "x",
+      "doubleValue": "x",
+      "O": "y",
+      "doubleValue2": "y",
+      "О": "z",
+      "doubleValue3": "z"
+    },
+    "methods": {
+      "4": [
+        "set"
+      ],
+      "method3673": [
+        "set"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.AnimatedValue": {
+    "fields": {},
+    "methods": {
+      "к": [
+        "update"
+      ],
+      "method3674": [
+        "update"
+      ],
+      "Ы": [
+        "isFinished"
+      ],
+      "method3675": [
+        "isFinished"
+      ],
+      "ы": [
+        "hasFinished"
+      ],
+      "method3676": [
+        "hasFinished"
+      ],
+      "ъ": [
+        "value"
+      ],
+      "method3677": [
+        "value"
+      ],
+      "А": [
+        "getValue"
+      ],
+      "method3678": [
+        "getValue"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.LivingEntityView": {
+    "fields": {},
+    "methods": {
+      "В": [
+        "getLivingEntity"
+      ],
+      "method3679": [
+        "getLivingEntity"
+      ],
+      "Oц": [
+        "isBlocking"
+      ],
+      "method3680": [
+        "isBlocking"
+      ],
+      "ж_": [
+        "hurtTime"
+      ],
+      "method3681": [
+        "hurtTime"
+      ],
+      "ж必": [
+        "health"
+      ],
+      "method3682": [
+        "health"
+      ],
+      "жо": [
+        "maxHealth"
+      ],
+      "method3683": [
+        "maxHealth"
+      ],
+      "жИ": [
+        "absorption"
+      ],
+      "method3684": [
+        "absorption"
+      ],
+      "ж9": [
+        "bodyYaw"
+      ],
+      "method3685": [
+        "bodyYaw"
+      ],
+      "жТ": [
+        "armor"
+      ],
+      "method3686": [
+        "armor"
+      ],
+      "O诶": [
+        "offhandItemKey"
+      ],
+      "method3687": [
+        "offhandItemKey"
+      ],
+      "OЭ": [
+        "mainHandItemKey"
+      ],
+      "method3688": [
+        "mainHandItemKey"
+      ],
+      "жН": [
+        "hurtTimeTicks"
+      ],
+      "method3689": [
+        "hurtTimeTicks"
+      ],
+      "Oщ": [
+        "isUsingItem"
+      ],
+      "method3690": [
+        "isUsingItem"
+      ]
+    }
+  },
+  "com.mouseclient.internal.LuaClientTypes.EntityView": {
+    "fields": {},
+    "methods": {
+      "ц0": [
+        "isTouchingWater"
+      ],
+      "method3692": [
+        "isTouchingWater"
+      ],
+      "ца": [
+        "isGlowing"
+      ],
+      "method3693": [
+        "isGlowing"
+      ],
+      "о": [
+        "position",
+        "distanceTo",
+        "getEntity"
+      ],
+      "method3694": [
+        "position"
+      ],
+      "у": [
+        "fallDistance"
+      ],
+      "method3695": [
+        "fallDistance"
+      ],
+      "method3696": [
+        "distanceTo"
+      ],
+      "ц7": [
+        "isSneaking"
+      ],
+      "method3697": [
+        "isSneaking"
+      ],
+      "р": [
+        "velocity"
+      ],
+      "method3698": [
+        "velocity"
+      ],
+      "ць": [
+        "isPlayer"
+      ],
+      "method3699": [
+        "isPlayer"
+      ],
+      "цч": [
+        "isSprinting"
+      ],
+      "method3700": [
+        "isSprinting"
+      ],
+      "method3691": [
+        "getEntity"
+      ],
+      "цю": [
+        "isAlive"
+      ],
+      "method3701": [
+        "isAlive"
+      ],
+      "ъ": [
+        "id"
+      ],
+      "method3702": [
+        "id"
+      ],
+      "цп": [
+        "isInLava"
+      ],
+      "method3703": [
+        "isInLava"
+      ],
+      "цр": [
+        "name"
+      ],
+      "method3704": [
+        "name"
+      ],
+      "Ш": [
+        "pitch"
+      ],
+      "method3705": [
+        "pitch"
+      ],
+      "3": [
+        "yaw"
+      ],
+      "method3706": [
+        "yaw"
+      ],
+      "ц2": [
+        "isOnGround"
+      ],
+      "method3707": [
+        "isOnGround"
+      ],
+      "цс": [
+        "isInvisible"
+      ],
+      "method3708": [
+        "isInvisible"
+      ],
+      "ц1": [
+        "typeKey"
+      ],
+      "method3709": [
+        "typeKey"
+      ]
+    }
+  }
+}

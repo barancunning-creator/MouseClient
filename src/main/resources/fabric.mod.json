@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "mouseclient",
+  "name": "маусклиент",
+  "version": "1.0.0",
+  "description": "маусклиент",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "com.mouseclient.network.ClientInitializer"
+    ],
+    "client": [
+      "com.mouseclient.network.ClientInitializer"
+    ]
+  },
+  "mixins": [
+    "mouseclient.mixins.json"
+  ],
+  "jars": [
+    {
+      "file": "META-INF/jars/luaj-jse-3.0.1.jar"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
