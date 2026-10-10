@@ -1,0 +1,308 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using MouseLauncher.Models;
+using MouseLauncher.Services;
+
+namespace MouseLauncher
+{
+    public partial class MainWindow : Window
+    {
+        private readonly ConfigService _configService;
+        private readonly UpdateService _updateService;
+        private readonly MinecraftLauncherService _launcherService;
+        private readonly JavaDetector _javaDetector;
+
+        private LauncherConfig _config = new();
+        private ClientVersionInfo _versionInfo = new();
+        private JavaInfo _javaInfo = new();
+        private bool _isBusy = false;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            _configService = new ConfigService();
+            _updateService = new UpdateService();
+            _launcherService = new MinecraftLauncherService();
+            _javaDetector = new JavaDetector();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 1. Загружаем сохраненную конфигурацию
+            _config = _configService.Load();
+
+            TxtNickname.Text = _config.Nickname;
+            SliderRam.Value = _config.RamMb;
+            UpdateRamDisplay(_config.RamMb);
+            TxtGamePath.Text = _config.MinecraftPath;
+            ChkAutoClose.IsChecked = _config.AutoClose;
+
+            // 2. Детектим Java 21+
+            CheckJavaEnvironment();
+
+            // 3. Проверяем обновления на GitHub
+            await CheckUpdatesAsync();
+        }
+
+        private void CheckJavaEnvironment()
+        {
+            try
+            {
+                _javaInfo = _javaDetector.DetectJava(_config.JavaPath);
+                if (_javaInfo.IsValid)
+                {
+                    ElpJavaDot.Fill = new SolidColorBrush(Color.FromRgb(16, 185, 129)); // Зеленый
+                    string shortName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(_javaInfo.Path) ?? "") ?? "") ?? "Java 21";
+                    TxtJavaStatus.Text = $"Java {_javaInfo.MajorVersion} ({shortName}) готова";
+                }
+                else
+                {
+                    ElpJavaDot.Fill = new SolidColorBrush(Color.FromRgb(239, 68, 68)); // Красный
+                    TxtJavaStatus.Text = "Java 21 не найдена! Установите JDK 21+";
+                }
+            }
+            catch (Exception ex)
+            {
+                TxtJavaStatus.Text = $"Ошибка проверки Java: {ex.Message}";
+            }
+        }
+
+        private async Task CheckUpdatesAsync()
+        {
+            TxtStatus.Text = "Проверка обновлений с GitHub...";
+            try
+            {
+                _versionInfo = await _updateService.CheckForUpdatesAsync();
+
+                TxtTitleVersion.Text = $"v{_versionInfo.Version}";
+                TxtBannerNotice.Text = _versionInfo.Notice;
+                ItemsChangelog.ItemsSource = _versionInfo.Changelog;
+
+                bool isInstalled = _updateService.IsClientInstalled(_config.MinecraftPath, _versionInfo);
+                if (isInstalled)
+                {
+                    TxtStatus.Text = $"MouseClient v{_versionInfo.Version} готов к игре";
+                }
+                else
+                {
+                    TxtStatus.Text = $"Доступна версия v{_versionInfo.Version} (требуется установка)";
+                }
+            }
+            catch (Exception ex)
+            {
+                TxtStatus.Text = $"Оффлайн-режим: {ex.Message}";
+            }
+        }
+
+        private void UpdateRamDisplay(int ramMb)
+        {
+            double gb = ramMb / 1024.0;
+            TxtRamValue.Text = $"{ramMb} МБ ({gb:F1} ГБ)";
+        }
+
+        private void SliderRam_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_config == null) return;
+            int ram = (int)e.NewValue;
+            // Округляем до шага 512 МБ
+            ram = (ram / 512) * 512;
+            _config.RamMb = ram;
+            UpdateRamDisplay(ram);
+            _configService.Save(_config);
+        }
+
+        private void TxtNickname_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (_config == null) return;
+            _config.Nickname = TxtNickname.Text.Trim();
+            _configService.Save(_config);
+        }
+
+        private void ChkAutoClose_Changed(object sender, RoutedEventArgs e)
+        {
+            if (_config == null) return;
+            _config.AutoClose = ChkAutoClose.IsChecked == true;
+            _configService.Save(_config);
+        }
+
+        private void BtnBrowsePath_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFolderDialog
+            {
+                Title = "Выберите папку .minecraft",
+                InitialDirectory = _config.MinecraftPath
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                _config.MinecraftPath = dialog.FolderName;
+                TxtGamePath.Text = dialog.FolderName;
+                _configService.Save(_config);
+                _ = CheckUpdatesAsync();
+            }
+        }
+
+        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
+        }
+
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void BtnOpenMinecraft_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!Directory.Exists(_config.MinecraftPath))
+                {
+                    Directory.CreateDirectory(_config.MinecraftPath);
+                }
+                Process.Start(new ProcessStartInfo("explorer.exe", _config.MinecraftPath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось открыть папку: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnOpenMods_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string mods = Path.Combine(_config.MinecraftPath, "mods");
+                if (!Directory.Exists(mods))
+                {
+                    Directory.CreateDirectory(mods);
+                }
+                Process.Start(new ProcessStartInfo("explorer.exe", mods) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось открыть папку mods: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnOpenGithub_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string url = "https://github.com/barancunning-creator/MouseClient";
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch { }
+        }
+
+        private async void BtnInstallOnly_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isBusy) return;
+            await InstallClientProcessAsync(launchAfter: false);
+        }
+
+        private async void BtnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isBusy) return;
+            await InstallClientProcessAsync(launchAfter: true);
+        }
+
+        private async Task InstallClientProcessAsync(bool launchAfter)
+        {
+            _isBusy = true;
+            BtnPlay.IsEnabled = false;
+            BtnInstallOnly.IsEnabled = false;
+            PbDownload.Visibility = Visibility.Visible;
+            PbDownload.Value = 0;
+
+            try
+            {
+                if (_versionInfo == null)
+                {
+                    _versionInfo = await _updateService.CheckForUpdatesAsync();
+                }
+
+                // 1. Проверяем наличие мода в mods/
+                bool isInstalled = _updateService.IsClientInstalled(_config.MinecraftPath, _versionInfo);
+                if (!isInstalled)
+                {
+                    TxtStatus.Text = "Начало загрузки клиента...";
+                    var progress = new Progress<UpdateProgressReport>(p =>
+                    {
+                        PbDownload.Value = p.Percentage;
+                        TxtStatus.Text = p.StatusMessage;
+                    });
+
+                    await _updateService.DownloadAndInstallClientAsync(_config.MinecraftPath, _versionInfo, progress);
+                    _config.LastInstalledVersion = _versionInfo.Version;
+                    _configService.Save(_config);
+                }
+
+                // 2. Регистрируем профиль в launcher_profiles.json
+                TxtStatus.Text = "Настройка профиля Fabric...";
+                await _launcherService.EnsureFabricInstalledAsync(
+                    _config.MinecraftPath,
+                    _versionInfo.MinecraftVersion,
+                    _versionInfo.FabricVersion,
+                    new Progress<string>(msg => TxtStatus.Text = msg));
+
+                _launcherService.RegisterLauncherProfile(_config, _versionInfo.MinecraftVersion, _versionInfo.FabricVersion);
+
+                if (!launchAfter)
+                {
+                    TxtStatus.Text = "MouseClient успешно установлен в .minecraft!";
+                    MessageBox.Show("MouseClient успешно установлен в папку mods и зарегистрирован в профилях Minecraft!\nТеперь вы можете играть прямо из этого лаунчера или выбрать профиль MouseClient в любом лаунчере.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // 3. Запуск игры
+                TxtStatus.Text = "Запуск игры...";
+                var launchResult = await _launcherService.LaunchDirectAsync(
+                    _config,
+                    _versionInfo,
+                    new Progress<string>(msg => TxtStatus.Text = msg));
+
+                if (launchResult.Success)
+                {
+                    TxtStatus.Text = "Игра запущена! Приятной игры.";
+
+                    if (_config.AutoClose)
+                    {
+                        await Task.Delay(2000);
+                        Close();
+                    }
+                }
+                else
+                {
+                    TxtStatus.Text = "Готово к запуску через лаунчер";
+                    MessageBox.Show($"{launchResult.Message}\n\nМод уже успешно установлен в mods/.\nВы можете запустить профиль 'MouseClient' через любой установленный лаунчер Minecraft (TLauncher, Official, Prism).", "Внимание", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                TxtStatus.Text = $"Ошибка: {ex.Message}";
+                MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _isBusy = false;
+                BtnPlay.IsEnabled = true;
+                BtnInstallOnly.IsEnabled = true;
+                PbDownload.Visibility = Visibility.Collapsed;
+            }
+        }
+    }
+}

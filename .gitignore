@@ -3,3 +3,5 @@ build/
 run/
 .idea/
 *.iml
+launcher/bin/
+launcher/obj/

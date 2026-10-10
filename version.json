@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "minecraftVersion": "1.21.11",
+  "fabricVersion": "0.19.5",
+  "downloadUrl": "https://github.com/barancunning-creator/MouseClient/releases/download/v1.0.0/MouseClient-1.0.0.jar",
+  "jarName": "MouseClient-1.0.0.jar",
+  "sha256": "",
+  "changelog": [
+    "Добавлена быстрая плавная доводка (silent snap)",
+    "Камера не дергается при наведении",
+    "Новый автономный C# лаунчер с автообновлением",
+    "Оптимизация FPS и стабильность обходов"
+  ],
+  "notice": "MouseClient 1.0.0 — лучший приватный клиент!",
+  "githubRepo": "barancunning-creator/MouseClient",
+  "telegramUrl": "",
+  "discordUrl": ""
+}
