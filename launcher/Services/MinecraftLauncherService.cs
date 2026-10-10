@@ -73,6 +73,46 @@ namespace MouseLauncher.Services
             }
         }
 
+        public async Task EnsureFabricApiAsync(string minecraftPath, IProgress<string>? statusProgress = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                string modsDir = Path.Combine(minecraftPath, "mods");
+                if (!Directory.Exists(modsDir)) Directory.CreateDirectory(modsDir);
+
+                var existing = Directory.GetFiles(modsDir, "*fabric-api*.jar");
+                if (existing.Length > 0) return;
+
+                statusProgress?.Report("Установка Fabric API...");
+                string target = Path.Combine(modsDir, "fabric-api-0.141.6+1.21.11.jar");
+
+                // Проверяем локальный кэш gradle
+                string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string gradleCache = Path.Combine(userProfile, ".gradle", "caches", "modules-2", "files-2.1",
+                    "net.fabricmc.fabric-api", "fabric-api", "0.141.6+1.21.11", "c98467cbbaf4d197377266795ae015f4130d65b6",
+                    "fabric-api-0.141.6+1.21.11.jar");
+
+                if (File.Exists(gradleCache))
+                {
+                    File.Copy(gradleCache, target, true);
+                    return;
+                }
+
+                // Скачиваем с Fabric Maven
+                string downloadUrl = "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/0.141.6+1.21.11/fabric-api-0.141.6+1.21.11.jar";
+                using var resp = await _httpClient.GetAsync(downloadUrl, cancellationToken);
+                if (resp.IsSuccessStatusCode)
+                {
+                    await using var fs = File.Create(target);
+                    await resp.Content.CopyToAsync(fs, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MinecraftLauncherService] Fabric API setup error: {ex.Message}");
+            }
+        }
+
         private async Task DownloadFabricLibrariesAsync(string minecraftPath, string versionJsonContent, CancellationToken cancellationToken)
         {
             try
@@ -198,6 +238,7 @@ namespace MouseLauncher.Services
             // 2. Убеждаемся, что Fabric установлен и профиль создан
             statusProgress?.Report("Подготовка файлов Fabric...");
             await EnsureFabricInstalledAsync(config.MinecraftPath, versionInfo.MinecraftVersion, versionInfo.FabricVersion, statusProgress, cancellationToken);
+            await EnsureFabricApiAsync(config.MinecraftPath, statusProgress, cancellationToken);
             RegisterLauncherProfile(config, versionInfo.MinecraftVersion, versionInfo.FabricVersion);
 
             // 3. Формируем пути и аргументы запуска

@@ -266,6 +266,10 @@ namespace MouseLauncher
                     _versionInfo.FabricVersion,
                     new Progress<string>(msg => TxtStatus.Text = msg));
 
+                await _launcherService.EnsureFabricApiAsync(
+                    _config.MinecraftPath,
+                    new Progress<string>(msg => TxtStatus.Text = msg));
+
                 _launcherService.RegisterLauncherProfile(_config, _versionInfo.MinecraftVersion, _versionInfo.FabricVersion);
 
                 if (!launchAfter)
