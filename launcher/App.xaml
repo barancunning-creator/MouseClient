@@ -4,44 +4,54 @@
              xmlns:local="clr-namespace:MouseLauncher"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Color Palette -->
-        <SolidColorBrush x:Key="BgDark" Color="#0D0E13" />
-        <SolidColorBrush x:Key="CardBg" Color="#151720" />
-        <SolidColorBrush x:Key="CardBgHover" Color="#1C1F2B" />
-        <SolidColorBrush x:Key="CardBorder" Color="#262A3B" />
-        <SolidColorBrush x:Key="TextPrimary" Color="#F9FAFB" />
-        <SolidColorBrush x:Key="TextSecondary" Color="#9CA3AF" />
-        <SolidColorBrush x:Key="TextMuted" Color="#6B7280" />
-        <SolidColorBrush x:Key="AccentPurple" Color="#8B5CF6" />
-        <SolidColorBrush x:Key="AccentPurpleDark" Color="#6D28D9" />
-        <SolidColorBrush x:Key="AccentBlue" Color="#3B82F6" />
-        <SolidColorBrush x:Key="AccentGreen" Color="#10B981" />
+        <!-- Color Palette: Violet - Blue - Cyan Neon Aesthetic -->
+        <SolidColorBrush x:Key="BgDark" Color="#090A10" />
+        <SolidColorBrush x:Key="CardBg" Color="#11131E" />
+        <SolidColorBrush x:Key="CardBgHover" Color="#181B2B" />
+        <SolidColorBrush x:Key="CardBorder" Color="#22273D" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#94A3B8" />
+        <SolidColorBrush x:Key="TextMuted" Color="#64748B" />
 
-        <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#8B5CF6" Offset="0.0" />
-            <GradientStop Color="#6366F1" Offset="1.0" />
+        <SolidColorBrush x:Key="NeonViolet" Color="#A855F7" />
+        <SolidColorBrush x:Key="NeonBlue" Color="#3B82F6" />
+        <SolidColorBrush x:Key="NeonCyan" Color="#00E5FF" />
+
+        <!-- High-Impact Gradients -->
+        <LinearGradientBrush x:Key="VioletCyanGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#9333EA" Offset="0.0" />
+            <GradientStop Color="#3B82F6" Offset="0.5" />
+            <GradientStop Color="#00E5FF" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="VioletCyanHorizontalGradient" StartPoint="0,0.5" EndPoint="1,0.5">
+            <GradientStop Color="#A855F7" Offset="0.0" />
+            <GradientStop Color="#2563EB" Offset="0.55" />
+            <GradientStop Color="#06B6D4" Offset="1.0" />
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="PlayButtonGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#9333EA" Offset="0.0" />
-            <GradientStop Color="#4F46E5" Offset="1.0" />
+            <GradientStop Color="#7C3AED" Offset="0.0" />
+            <GradientStop Color="#2563EB" Offset="0.5" />
+            <GradientStop Color="#00D2FF" Offset="1.0" />
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="PlayButtonHoverGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#A855F7" Offset="0.0" />
-            <GradientStop Color="#6366F1" Offset="1.0" />
+            <GradientStop Color="#9333EA" Offset="0.0" />
+            <GradientStop Color="#3B82F6" Offset="0.5" />
+            <GradientStop Color="#38BDF8" Offset="1.0" />
         </LinearGradientBrush>
 
         <!-- Custom TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="#12141C" />
-            <Setter Property="Foreground" Value="#F3F4F6" />
-            <Setter Property="BorderBrush" Value="#2D3247" />
+            <Setter Property="Background" Value="#0E101A" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="BorderBrush" Value="#22283E" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Padding" Value="12,10" />
-            <Setter Property="CaretBrush" Value="#8B5CF6" />
+            <Setter Property="CaretBrush" Value="#00E5FF" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -55,11 +65,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#4B5563" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#38BDF8" />
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#8B5CF6" />
-                                <Setter TargetName="border" Property="Background" Value="#171A24" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF" />
+                                <Setter TargetName="border" Property="Background" Value="#131624" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -67,12 +77,12 @@
             </Setter>
         </Style>
 
-        <!-- Play Button Style -->
+        <!-- Glowing Neon Play Button -->
         <Style x:Key="PlayButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PlayButtonGradient}" />
             <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="FontSize" Value="17" />
-            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Black" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="24,12" />
@@ -84,59 +94,28 @@
                                 CornerRadius="10"
                                 Padding="{TemplateBinding Padding}">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" Direction="270" ShadowDepth="4" Color="#8B5CF6" Opacity="0.45" />
+                                <DropShadowEffect BlurRadius="22" Direction="270" ShadowDepth="3" Color="#00E5FF" Opacity="0.4" />
                             </Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="{StaticResource PlayButtonHoverGradient}" />
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="30" Direction="270" ShadowDepth="4" Color="#00E5FF" Opacity="0.65" />
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="RenderTransform">
                                     <Setter.Value>
-                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98" CenterX="100" CenterY="25"/>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97" CenterX="100" CenterY="25"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Opacity" Value="0.6" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Secondary Button Style -->
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#1A1C26" />
-            <Setter Property="Foreground" Value="#D1D5DB" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#2D3247" />
-            <Setter Property="Padding" Value="14,9" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#252938" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="#8B5CF6" />
-                                <Setter Property="Foreground" Value="#FFFFFF" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#171922" />
+                                <Setter TargetName="border" Property="Opacity" Value="0.5" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -147,7 +126,7 @@
         <!-- Window Control Button (Minimize / Close) -->
         <Style x:Key="WindowCtrlButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="#9CA3AF" />
+            <Setter Property="Foreground" Value="#64748B" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Width" Value="36" />
@@ -161,8 +140,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bg" Property="Background" Value="#2D3247" />
-                                <Setter Property="Foreground" Value="#FFFFFF" />
+                                <Setter TargetName="bg" Property="Background" Value="#1E2338" />
+                                <Setter Property="Foreground" Value="#00E5FF" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -180,11 +159,11 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Custom Slider Style -->
+        <!-- Modern Neon Slider Style -->
         <Style x:Key="ModernSlider" TargetType="Slider">
             <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#8B5CF6"/>
+            <Setter Property="Foreground" Value="{StaticResource VioletCyanHorizontalGradient}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Slider">
@@ -194,7 +173,7 @@
                                     <RepeatButton Command="{x:Static Slider.DecreaseLarge}">
                                         <RepeatButton.Template>
                                             <ControlTemplate TargetType="RepeatButton">
-                                                <Border Height="6" Background="#8B5CF6" CornerRadius="3,0,0,3"/>
+                                                <Border Height="6" Background="{StaticResource VioletCyanHorizontalGradient}" CornerRadius="3,0,0,3"/>
                                             </ControlTemplate>
                                         </RepeatButton.Template>
                                     </RepeatButton>
@@ -203,7 +182,7 @@
                                     <RepeatButton Command="{x:Static Slider.IncreaseLarge}">
                                         <RepeatButton.Template>
                                             <ControlTemplate TargetType="RepeatButton">
-                                                <Border Height="6" Background="#232635" CornerRadius="0,3,3,0"/>
+                                                <Border Height="6" Background="#181B2B" CornerRadius="0,3,3,0"/>
                                             </ControlTemplate>
                                         </RepeatButton.Template>
                                     </RepeatButton>
@@ -212,9 +191,9 @@
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Ellipse Width="18" Height="18" Fill="#FFFFFF" Stroke="#8B5CF6" StrokeThickness="3">
+                                                <Ellipse Width="18" Height="18" Fill="#00E5FF" Stroke="#9333EA" StrokeThickness="3">
                                                     <Ellipse.Effect>
-                                                        <DropShadowEffect BlurRadius="8" Color="#8B5CF6" Opacity="0.6"/>
+                                                        <DropShadowEffect BlurRadius="12" Color="#00E5FF" Opacity="0.8"/>
                                                     </Ellipse.Effect>
                                                 </Ellipse>
                                             </ControlTemplate>
@@ -228,22 +207,26 @@
             </Setter>
         </Style>
 
-        <!-- Modern ProgressBar -->
+        <!-- Modern Neon ProgressBar -->
         <Style x:Key="ModernProgressBar" TargetType="ProgressBar">
-            <Setter Property="Height" Value="8" />
-            <Setter Property="Background" Value="#1F2332" />
-            <Setter Property="Foreground" Value="{StaticResource PrimaryGradient}" />
+            <Setter Property="Height" Value="6" />
+            <Setter Property="Background" Value="#141829" />
+            <Setter Property="Foreground" Value="{StaticResource VioletCyanHorizontalGradient}" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="4" ClipToBounds="True">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3" ClipToBounds="True">
                             <Grid x:Name="TemplateRoot">
                                 <Border x:Name="PART_Track" />
                                 <Border x:Name="PART_Indicator"
                                         HorizontalAlignment="Left"
                                         Background="{TemplateBinding Foreground}"
-                                        CornerRadius="4" />
+                                        CornerRadius="3">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" Color="#00E5FF" Opacity="0.6"/>
+                                    </Border.Effect>
+                                </Border>
                             </Grid>
                         </Border>
                     </ControlTemplate>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MouseLauncher"
         mc:Ignorable="d"
         Title="MouseClient Launcher"
-        Height="620" Width="920"
+        Height="540" Width="840"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -14,214 +14,328 @@
         ResizeMode="CanMinimize"
         Loaded="Window_Loaded">
 
-    <Border Background="#0E1017"
-            BorderBrush="#252A3B"
+    <Window.Resources>
+        <!-- Storyboards for the Ultra-Beautiful Loading Screen -->
+        <Storyboard x:Key="SpinClockwise" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="OuterRingRotate"
+                             Storyboard.TargetProperty="Angle"
+                             From="0" To="360" Duration="0:0:2.0" />
+        </Storyboard>
+        <Storyboard x:Key="SpinCounterClockwise" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="InnerRingRotate"
+                             Storyboard.TargetProperty="Angle"
+                             From="360" To="0" Duration="0:0:1.4" />
+        </Storyboard>
+        <Storyboard x:Key="PulseLogo" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="LogoPulseScale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="0.92" To="1.06" Duration="0:0:0.85" />
+            <DoubleAnimation Storyboard.TargetName="LogoPulseScale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="0.92" To="1.06" Duration="0:0:0.85" />
+        </Storyboard>
+    </Window.Resources>
+
+    <!-- Main Outer Container with Glowing Border -->
+    <Border Background="#090B12"
+            BorderBrush="#1F2840"
             BorderThickness="1"
-            CornerRadius="14">
+            CornerRadius="16">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="25" Direction="270" ShadowDepth="6" Color="#000000" Opacity="0.7"/>
+            <DropShadowEffect BlurRadius="35" Direction="270" ShadowDepth="6" Color="#00E5FF" Opacity="0.18"/>
         </Border.Effect>
 
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="46" /> <!-- Title Bar -->
-                <RowDefinition Height="*" />  <!-- Main Content -->
-                <RowDefinition Height="90" /> <!-- Bottom Action Bar -->
-            </Grid.RowDefinitions>
+            <!-- Background Subtle Ambient Glows -->
+            <Canvas IsHitTestVisible="False" ClipToBounds="True">
+                <Ellipse Width="350" Height="350" Canvas.Left="-80" Canvas.Top="-100" Opacity="0.12">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#9333EA" Offset="0"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse Width="350" Height="350" Canvas.Right="-80" Canvas.Bottom="-100" Opacity="0.12">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#00E5FF" Offset="0"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Canvas>
 
-            <!-- 1. Top Title Bar -->
-            <Border Grid.Row="0"
-                    Background="#141722"
-                    CornerRadius="14,14,0,0"
-                    BorderBrush="#1F2332"
-                    BorderThickness="0,0,0,1"
-                    MouseDown="TitleBar_MouseDown">
-                <Grid Margin="16,0,12,0">
+            <!-- Main Layout Grid -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" /> <!-- Title Bar -->
+                    <RowDefinition Height="*" />  <!-- Clean Content -->
+                    <RowDefinition Height="80" /> <!-- Bottom Action Bar -->
+                </Grid.RowDefinitions>
+
+                <!-- 1. Sleek Minimalist Title Bar -->
+                <Border Grid.Row="0"
+                        Background="#0D0F18"
+                        CornerRadius="16,16,0,0"
+                        BorderBrush="#161B2B"
+                        BorderThickness="0,0,0,1"
+                        MouseDown="TitleBar_MouseDown">
+                    <Grid Margin="18,0,14,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Brand Logo + Title -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="/Assets/logo.png" Width="26" Height="26" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="MOUSE" FontWeight="Black" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                            <TextBlock Text="CLIENT" FontWeight="Black" FontSize="16" Foreground="#00E5FF" Margin="5,0,0,0" VerticalAlignment="Center"/>
+
+                            <!-- Version Pill Badge -->
+                            <Border Background="#161B2D" CornerRadius="6" Padding="7,2" Margin="14,0,0,0" VerticalAlignment="Center" BorderBrush="#263152" BorderThickness="1">
+                                <TextBlock x:Name="TxtTitleVersion" Text="v1.0.0" FontSize="11" FontWeight="Bold" Foreground="#38BDF8"/>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Window Controls -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource WindowCtrlButton}" Content="—" Click="BtnMinimize_Click" ToolTip="Свернуть"/>
+                            <Button Style="{StaticResource WindowCloseButton}" Content="✕" Click="BtnClose_Click" ToolTip="Закрыть"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- 2. Clean Center Section (No Garbage, Only Core Cards) -->
+                <Grid Grid.Row="1" Margin="24,18,24,12">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1.1*" /> <!-- Left: Client Card -->
+                        <ColumnDefinition Width="20" />   <!-- Spacer -->
+                        <ColumnDefinition Width="*" />    <!-- Right: Settings Card -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Logo & Title -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/logo.png" Width="26" Height="26" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
-                        <TextBlock Text="MOUSE" FontWeight="Black" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
-                        <TextBlock Text="CLIENT" FontWeight="Black" FontSize="16" Foreground="#8B5CF6" Margin="4,0,0,0" VerticalAlignment="Center"/>
-                        
-                        <!-- Version Badge -->
-                        <Border Background="#232738" CornerRadius="6" Padding="6,2" Margin="12,0,0,0" VerticalAlignment="Center">
-                            <TextBlock x:Name="TxtTitleVersion" Text="v1.0.0" FontSize="11" FontWeight="Bold" Foreground="#9CA3AF"/>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- Window Control Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Style="{StaticResource WindowCtrlButton}" Content="—" Click="BtnMinimize_Click" ToolTip="Свернуть"/>
-                        <Button Style="{StaticResource WindowCloseButton}" Content="✕" Click="BtnClose_Click" ToolTip="Закрыть"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- 2. Main Content Grid -->
-            <Grid Grid.Row="1" Margin="20,16,20,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.2*" /> <!-- Left: Banner & Updates -->
-                    <ColumnDefinition Width="20" />    <!-- Spacer -->
-                    <ColumnDefinition Width="*" />    <!-- Right: Settings -->
-                </Grid.ColumnDefinitions>
-
-                <!-- Left Column: Banner & News -->
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <!-- Hero Banner -->
-                    <Border Grid.Row="0" CornerRadius="12" Height="100" Margin="0,0,0,14" ClipToBounds="True">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#4C1D95" Offset="0"/>
-                                <GradientStop Color="#1E1B4B" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Grid Margin="18,14">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="#10B981" Width="8" Height="8" CornerRadius="4" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtServerStatus" Text="СЕРВЕР ОБНОВЛЕНИЙ: ОНЛАЙН" FontWeight="Bold" FontSize="11" Foreground="#34D399"/>
-                                </StackPanel>
-                                <TextBlock x:Name="TxtBannerNotice" Text="MouseClient 1.0.0 — лучший приватный клиент!"
-                                           FontWeight="ExtraBold" FontSize="17" Foreground="#FFFFFF" Margin="0,6,0,2"/>
-                                <TextBlock Text="Синхронизация через GitHub CDN • Бесплатные автообновления"
-                                           FontSize="12" Foreground="#C4B5FD"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-
-                    <!-- Changelog Card -->
-                    <Border Grid.Row="1" Background="#141620" BorderBrush="#232738" BorderThickness="1" CornerRadius="12" Padding="16,14">
+                    <!-- Left Card: Client Status & Features -->
+                    <Border Grid.Column="0"
+                            Background="#0E111B"
+                            BorderBrush="#1E243A"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="20,18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="⚡ ЧТО НОВОГО В ОБНОВЛЕНИИ" FontWeight="Bold" FontSize="13" Foreground="#E5E7EB"/>
-                                <TextBlock x:Name="TxtReleaseDate" Text="" FontSize="12" Foreground="#6B7280" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            <!-- Hero Badge & Status -->
+                            <StackPanel Grid.Row="0">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                    <Ellipse Width="8" Height="8" Fill="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center">
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect BlurRadius="10" Color="#00E5FF" Opacity="0.8"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <TextBlock Text="КЛИЕНТ ГОТОВ К ИГРЕ" FontWeight="Bold" FontSize="11" Foreground="#00E5FF"/>
+                                </StackPanel>
+                                <TextBlock Text="MouseClient 1.21.11" FontSize="20" FontWeight="Black" Foreground="#FFFFFF" Margin="0,0,0,2"/>
+                                <TextBlock Text="Fabric 0.19.5 • Приватные обходы и плавный аим" FontSize="12" Foreground="#94A3B8"/>
                             </StackPanel>
 
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="ItemsChangelog">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,4,0,6">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="• " Foreground="#8B5CF6" FontWeight="Bold" FontSize="14"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding}" Foreground="#D1D5DB" FontSize="13" TextWrapping="Wrap"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                            <!-- Features / What's New List -->
+                            <Border Grid.Row="1" Background="#090B12" CornerRadius="10" Padding="14,12" Margin="0,14,0,14" BorderBrush="#161B2E" BorderThickness="1">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="ItemsChangelog">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,4,0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="◆ " Foreground="#A855F7" FontWeight="Bold" FontSize="11" VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding}" Foreground="#E2E8F0" FontSize="12" FontWeight="Medium" TextWrapping="Wrap"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+
+                            <!-- Quick Action Buttons -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                <Button Content="📁 Папка mods" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="12,6" Height="32"
+                                        Background="#121624" Foreground="#94A3B8" Click="BtnOpenMods_Click" Margin="0,0,10,0"/>
+                                <Button Content="🌐 GitHub" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="12,6" Height="32"
+                                        Background="#121624" Foreground="#94A3B8" Click="BtnOpenGithub_Click"/>
+                            </StackPanel>
                         </Grid>
                     </Border>
 
-                    <!-- Quick Links Bar -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,0,0">
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="📁 Папка .minecraft" Click="BtnOpenMinecraft_Click" Margin="0,0,8,0"/>
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="🧩 Папка mods" Click="BtnOpenMods_Click" Margin="0,0,8,0"/>
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Content="🌐 GitHub" Click="BtnOpenGithub_Click"/>
-                    </StackPanel>
-                </Grid>
-
-                <!-- Right Column: Settings Card -->
-                <Border Grid.Column="2" Background="#141620" BorderBrush="#232738" BorderThickness="1" CornerRadius="12" Padding="18,16">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock Text="⚙ НАСТРОЙКИ ЗАПУСКА" FontWeight="Bold" FontSize="14" Foreground="#F3F4F6" Margin="0,0,0,16"/>
+                    <!-- Right Card: Player Settings -->
+                    <Border Grid.Column="2"
+                            Background="#0E111B"
+                            BorderBrush="#1E243A"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="20,18">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="НАСТРОЙКИ ЗАПУСКА" FontWeight="Black" FontSize="13" Foreground="#94A3B8" Margin="0,0,0,14"/>
 
                             <!-- Nickname Field -->
-                            <TextBlock Text="Никнейм игрока" FontSize="12" FontWeight="SemiBold" Foreground="#9CA3AF" Margin="0,0,0,6"/>
+                            <TextBlock Text="Никнейм в игре" FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,6"/>
                             <TextBox x:Name="TxtNickname" Style="{StaticResource ModernTextBox}" Text="MouseUser" TextChanged="TxtNickname_TextChanged" Margin="0,0,0,16"/>
 
                             <!-- RAM Slider -->
                             <Grid Margin="0,0,0,6">
-                                <TextBlock Text="Оперативная память" FontSize="12" FontWeight="SemiBold" Foreground="#9CA3AF" HorizontalAlignment="Left"/>
-                                <TextBlock x:Name="TxtRamValue" Text="4096 МБ (4.0 ГБ)" FontSize="12" FontWeight="Bold" Foreground="#8B5CF6" HorizontalAlignment="Right"/>
+                                <TextBlock Text="Выделение памяти" FontSize="12" FontWeight="SemiBold" Foreground="#64748B" HorizontalAlignment="Left"/>
+                                <TextBlock x:Name="TxtRamValue" Text="4096 МБ (4.0 ГБ)" FontSize="12" FontWeight="Bold" Foreground="#00E5FF" HorizontalAlignment="Right"/>
                             </Grid>
                             <Slider x:Name="SliderRam" Style="{StaticResource ModernSlider}"
                                     Minimum="2048" Maximum="16384" SmallChange="512" LargeChange="1024"
                                     Value="4096" ValueChanged="SliderRam_ValueChanged" Margin="0,0,0,18"/>
 
-                            <!-- Java Status Badge -->
-                            <TextBlock Text="Среда исполнения Java" FontSize="12" FontWeight="SemiBold" Foreground="#9CA3AF" Margin="0,0,0,6"/>
-                            <Border Background="#10121A" BorderBrush="#232738" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,16">
+                            <!-- Java Status Indicator -->
+                            <Border Background="#090B12" BorderBrush="#161B2E" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,14">
                                 <StackPanel Orientation="Horizontal">
-                                    <Ellipse x:Name="ElpJavaDot" Width="10" Height="10" Fill="#10B981" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtJavaStatus" Text="Проверка Java..." FontSize="12" Foreground="#D1D5DB" VerticalAlignment="Center"/>
+                                    <Ellipse x:Name="ElpJavaDot" Width="8" Height="8" Fill="#00E5FF" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="TxtJavaStatus" Text="Java 21 найдена" FontSize="12" FontWeight="SemiBold" Foreground="#94A3B8" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
 
-                            <!-- Minecraft Path -->
-                            <TextBlock Text="Директория .minecraft" FontSize="12" FontWeight="SemiBold" Foreground="#9CA3AF" Margin="0,0,0,6"/>
-                            <Grid Margin="0,0,0,16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="TxtGamePath" Grid.Column="0" Style="{StaticResource ModernTextBox}" IsReadOnly="True" FontSize="11" Margin="0,0,8,0"/>
-                                <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}" Content="Обзор" Click="BtnBrowsePath_Click"/>
-                            </Grid>
-
-                            <!-- Checkbox: Auto-close -->
-                            <CheckBox x:Name="ChkAutoClose" Content="Закрывать лаунчер при запуске"
-                                      Foreground="#D1D5DB" FontSize="12" FontWeight="Medium"
-                                      Checked="ChkAutoClose_Changed" Unchecked="ChkAutoClose_Changed"
-                                      Margin="0,4,0,0"/>
+                            <!-- Auto-close checkbox -->
+                            <CheckBox x:Name="ChkAutoClose" Content="Закрывать лаунчер при старте игры"
+                                      Foreground="#64748B" FontSize="12" FontWeight="Medium"
+                                      Checked="ChkAutoClose_Changed" Unchecked="ChkAutoClose_Changed"/>
                         </StackPanel>
-                    </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- 3. Bottom Action Bar -->
+                <Border Grid.Row="2"
+                        Background="#0D0F18"
+                        BorderBrush="#161B2B"
+                        BorderThickness="0,1,0,0"
+                        CornerRadius="0,0,16,16"
+                        Padding="24,12">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Status Indicator -->
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                            <TextBlock x:Name="TxtStatus" Text="Готов к игре" FontSize="13" FontWeight="SemiBold" Foreground="#E2E8F0"/>
+                        </StackPanel>
+
+                        <!-- Right: Huge Neon Play Button -->
+                        <Button x:Name="BtnPlay" Grid.Column="1" Style="{StaticResource PlayButtonStyle}"
+                                Width="200" Height="48" Click="BtnPlay_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="▶ " FontSize="13" FontWeight="Black"/>
+                                <TextBlock Text="ИГРАТЬ" FontSize="15" FontWeight="Black"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </Border>
             </Grid>
 
-            <!-- 3. Bottom Action Bar -->
-            <Border Grid.Row="2"
-                    Background="#12141C"
-                    BorderBrush="#1F2332"
-                    BorderThickness="0,1,0,0"
-                    CornerRadius="0,0,14,14"
-                    Padding="20,12">
-                <Grid VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+            <!-- 4. ULTRA-BEAUTIFUL LOADING OVERLAY -->
+            <Border x:Name="LoadingOverlay"
+                    Background="#F007080E"
+                    CornerRadius="16"
+                    Opacity="0"
+                    Visibility="Collapsed">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="40" Color="#000000" Opacity="0.9"/>
+                </Border.Effect>
 
-                    <!-- Left: Status text & Progress Bar -->
-                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
-                        <TextBlock x:Name="TxtStatus" Text="Готов к игре" FontSize="13" FontWeight="SemiBold" Foreground="#E5E7EB" Margin="0,0,0,6"/>
-                        <ProgressBar x:Name="PbDownload" Style="{StaticResource ModernProgressBar}" Value="0" Maximum="100" Visibility="Collapsed"/>
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center">
+
+                        <!-- Concentric Neon Spinner with Pulsing Logo -->
+                        <Grid Width="120" Height="120" HorizontalAlignment="Center" Margin="0,0,0,24">
+
+                            <!-- Outer Neon Cyan Ring (Clockwise) -->
+                            <Ellipse Width="116" Height="116" StrokeThickness="3" StrokeDashArray="4 2">
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#00E5FF" Offset="0"/>
+                                        <GradientStop Color="#2563EB" Offset="0.7"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="18" Color="#00E5FF" Opacity="0.75"/>
+                                </Ellipse.Effect>
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="OuterRingRotate" CenterX="58" CenterY="58" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+
+                            <!-- Inner Neon Violet Ring (Counter-Clockwise) -->
+                            <Ellipse Width="86" Height="86" StrokeThickness="3" StrokeDashArray="3 1.5">
+                                <Ellipse.Stroke>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#A855F7" Offset="0"/>
+                                        <GradientStop Color="#6366F1" Offset="0.7"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Stroke>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="16" Color="#A855F7" Opacity="0.75"/>
+                                </Ellipse.Effect>
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="InnerRingRotate" CenterX="43" CenterY="43" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+
+                            <!-- Center Pulsing MouseClient Logo -->
+                            <Image Source="/Assets/logo.png" Width="44" Height="44"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   RenderOptions.BitmapScalingMode="HighQuality">
+                                <Image.Effect>
+                                    <DropShadowEffect BlurRadius="20" Color="#00E5FF" Opacity="0.8"/>
+                                </Image.Effect>
+                                <Image.RenderTransform>
+                                    <ScaleTransform x:Name="LogoPulseScale" CenterX="22" CenterY="22"/>
+                                </Image.RenderTransform>
+                            </Image>
+                        </Grid>
+
+                        <!-- Loading Title with Gradient -->
+                        <TextBlock Text="ЗАПУСК MOUSE CLIENT"
+                                   FontSize="18" FontWeight="Black"
+                                   HorizontalAlignment="Center" Margin="0,0,0,6">
+                            <TextBlock.Foreground>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#A855F7" Offset="0"/>
+                                    <GradientStop Color="#00E5FF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </TextBlock.Foreground>
+                        </TextBlock>
+
+                        <!-- Dynamic Loading Step Text -->
+                        <TextBlock x:Name="TxtLoadingStatus"
+                                   Text="Инициализация клиента..."
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="#94A3B8"
+                                   HorizontalAlignment="Center" Margin="0,0,0,18"/>
+
+                        <!-- Fluid Neon Progress Bar -->
+                        <ProgressBar x:Name="PbLoading"
+                                     Style="{StaticResource ModernProgressBar}"
+                                     Width="280" Height="6" Value="30" Maximum="100"/>
+
+                        <!-- Percentage Label -->
+                        <TextBlock x:Name="TxtLoadingPercent"
+                                   Text="" FontSize="11" FontWeight="Bold"
+                                   Foreground="#38BDF8"
+                                   HorizontalAlignment="Center" Margin="0,8,0,0"/>
                     </StackPanel>
-
-                    <!-- Secondary Action: Install only -->
-                    <Button x:Name="BtnInstallOnly" Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}"
-                            Content="Установить в mods" Click="BtnInstallOnly_Click" Margin="0,0,12,0" VerticalAlignment="Center"/>
-
-                    <!-- Primary Action: PLAY button -->
-                    <Button x:Name="BtnPlay" Grid.Column="2" Style="{StaticResource PlayButtonStyle}"
-                            Width="180" Height="48" Click="BtnPlay_Click" VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="▶ " FontSize="14" FontWeight="Bold"/>
-                            <TextBlock Text="ИГРАТЬ" FontSize="16" FontWeight="Black"/>
-                        </StackPanel>
-                    </Button>
                 </Grid>
             </Border>
         </Grid>
