@@ -4,11 +4,11 @@
              xmlns:local="clr-namespace:MouseLauncher"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Color Palette: Violet - Blue - Cyan Neon Aesthetic -->
-        <SolidColorBrush x:Key="BgDark" Color="#090A10" />
-        <SolidColorBrush x:Key="CardBg" Color="#11131E" />
-        <SolidColorBrush x:Key="CardBgHover" Color="#181B2B" />
-        <SolidColorBrush x:Key="CardBorder" Color="#22273D" />
+        <!-- Color Palette: Minimalist Cyber Violet - Blue - Cyan -->
+        <SolidColorBrush x:Key="BgDark" Color="#07080E" />
+        <SolidColorBrush x:Key="CardBg" Color="#0D0F1A" />
+        <SolidColorBrush x:Key="CardBgGlass" Color="#D90D0F1A" />
+        <SolidColorBrush x:Key="CardBorder" Color="#1E2338" />
         <SolidColorBrush x:Key="TextPrimary" Color="#FFFFFF" />
         <SolidColorBrush x:Key="TextSecondary" Color="#94A3B8" />
         <SolidColorBrush x:Key="TextMuted" Color="#64748B" />
@@ -42,11 +42,46 @@
             <GradientStop Color="#38BDF8" Offset="1.0" />
         </LinearGradientBrush>
 
+        <!-- Navigation Tab Style -->
+        <Style x:Key="NavTabStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#141829" />
+                                <Setter Property="Foreground" Value="#E2E8F0" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#181D33" />
+                                <Setter Property="Foreground" Value="#00E5FF" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#2563EB" />
+                                <Setter TargetName="border" Property="BorderThickness" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Custom TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="#0E101A" />
+            <Setter Property="Background" Value="#0C0E17" />
             <Setter Property="Foreground" Value="#FFFFFF" />
-            <Setter Property="BorderBrush" Value="#22283E" />
+            <Setter Property="BorderBrush" Value="#1E243A" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -69,7 +104,7 @@
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF" />
-                                <Setter TargetName="border" Property="Background" Value="#131624" />
+                                <Setter TargetName="border" Property="Background" Value="#121524" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -85,7 +120,7 @@
             <Setter Property="FontWeight" Value="Black" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="24,12" />
+            <Setter Property="Padding" Value="26,12" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -94,7 +129,7 @@
                                 CornerRadius="10"
                                 Padding="{TemplateBinding Padding}">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="22" Direction="270" ShadowDepth="3" Color="#00E5FF" Opacity="0.4" />
+                                <DropShadowEffect BlurRadius="24" Direction="270" ShadowDepth="3" Color="#00E5FF" Opacity="0.45" />
                             </Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
@@ -103,7 +138,7 @@
                                 <Setter TargetName="border" Property="Background" Value="{StaticResource PlayButtonHoverGradient}" />
                                 <Setter TargetName="border" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect BlurRadius="30" Direction="270" ShadowDepth="4" Color="#00E5FF" Opacity="0.65" />
+                                        <DropShadowEffect BlurRadius="32" Direction="270" ShadowDepth="4" Color="#00E5FF" Opacity="0.75" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
