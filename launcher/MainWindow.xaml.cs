@@ -120,7 +120,6 @@ namespace MouseLauncher
             FrameworkElement? target = null;
             if (TabHome.IsChecked == true) target = PanelHome;
             else if (TabSettings.IsChecked == true) target = PanelSettings;
-            else if (TabChangelog.IsChecked == true) target = PanelChangelog;
             else if (TabAbout.IsChecked == true) target = PanelAbout;
 
             if (target != null)
@@ -131,7 +130,7 @@ namespace MouseLauncher
 
         private void SwitchToTab(FrameworkElement targetPanel)
         {
-            var panels = new FrameworkElement[] { PanelHome, PanelSettings, PanelChangelog, PanelAbout };
+            var panels = new FrameworkElement[] { PanelHome, PanelSettings, PanelAbout };
             foreach (var p in panels)
             {
                 if (p == targetPanel)
@@ -199,7 +198,6 @@ namespace MouseLauncher
                 _versionInfo = await _updateService.CheckForUpdatesAsync();
 
                 TxtTitleVersion.Text = $"v{_versionInfo.Version} Релиз";
-                ItemsChangelog.ItemsSource = _versionInfo.Changelog;
 
                 bool isInstalled = _updateService.IsClientInstalled(_config.MinecraftPath, _versionInfo);
                 if (isInstalled)
@@ -321,6 +319,24 @@ namespace MouseLauncher
             {
                 MessageBox.Show($"Не удалось открыть папку mods: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void BtnOpenTelegram_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("https://t.me/MouseClient") { UseShellExecute = true });
+            }
+            catch { }
+        }
+
+        private void BtnOpenDiscord_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("https://discord.gg/DGKR9kaHuH") { UseShellExecute = true });
+            }
+            catch { }
         }
 
         private void BtnOpenGithub_Click(object sender, RoutedEventArgs e)

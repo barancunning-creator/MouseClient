@@ -97,7 +97,6 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <RadioButton x:Name="TabHome" Style="{StaticResource NavTabStyle}" Content="Главная" IsChecked="True" Checked="Tab_Checked"/>
                             <RadioButton x:Name="TabSettings" Style="{StaticResource NavTabStyle}" Content="Настройки" Checked="Tab_Checked"/>
-                            <RadioButton x:Name="TabChangelog" Style="{StaticResource NavTabStyle}" Content="Обновления" Checked="Tab_Checked"/>
                             <RadioButton x:Name="TabAbout" Style="{StaticResource NavTabStyle}" Content="О клиенте" Checked="Tab_Checked"/>
                         </StackPanel>
 
@@ -255,75 +254,32 @@
                     </Border>
                 </Grid>
 
-                <!-- TAB 3: CHANGELOG (Minimalist Cards) -->
-                <Grid x:Name="PanelChangelog" Visibility="Collapsed" Margin="32,24" RenderTransformOrigin="0.5,0.5">
-                    <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="20" Padding="28,24">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                                <TextBlock Text="СПИСОК ОБНОВЛЕНИЙ" FontWeight="Black" FontSize="18" Foreground="#FFFFFF" Margin="0,0,0,4"/>
-                                <TextBlock Text="Актуальные изменения и история релизов MouseClient" FontSize="13" Foreground="#64748B" Margin="0,0,0,14"/>
-
-                                <!-- Release Highlights Card -->
-                                <Border Background="#12182E" BorderBrush="#2563EB" BorderThickness="1" CornerRadius="14" Padding="16,12">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Border Background="#7C3AED" CornerRadius="8" Padding="10,4" Margin="0,0,12,0">
-                                                <TextBlock Text="РЕЛИЗ" FontSize="11" FontWeight="Black" Foreground="#FFFFFF"/>
-                                            </Border>
-                                            <TextBlock Text="MouseClient v1.0.0" FontSize="15" FontWeight="Black" Foreground="#FFFFFF" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                        <TextBlock Grid.Column="2" Text="Официальная версия • Бесплатно" FontSize="12" FontWeight="SemiBold" Foreground="#00E5FF" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </Border>
-                            </StackPanel>
-
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="ItemsChangelog">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="#090B12" BorderBrush="#1A2033" BorderThickness="1" CornerRadius="12" Padding="16,12" Margin="0,0,0,10">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="◆ " Foreground="#00E5FF" FontWeight="Black" FontSize="14" VerticalAlignment="Center"/>
-                                                    <TextBlock Grid.Column="1" Text="{Binding}" Foreground="#E2E8F0" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-                </Grid>
-
-                <!-- TAB 4: ABOUT & SHORTCUTS -->
+                <!-- TAB 3: ABOUT & COMMUNITY -->
                 <Grid x:Name="PanelAbout" Visibility="Collapsed" Margin="32,24" RenderTransformOrigin="0.5,0.5">
                     <Border Background="#E60D0F1A" BorderBrush="#1C2338" BorderThickness="1" CornerRadius="20" Padding="28,24">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="520">
-                            <Image Source="/Assets/logo.png" Width="64" Height="64" Margin="0,0,0,14" HorizontalAlignment="Center"/>
+                            <Image Source="/Assets/logo.png" Width="64" Height="64" Margin="0,0,0,14" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
                             <TextBlock Text="MOUSE CLIENT" FontSize="22" FontWeight="Black" Foreground="#FFFFFF" HorizontalAlignment="Center" Margin="0,0,0,4"/>
                             <TextBlock Text="Бесплатный чит-клиент нового поколения для Minecraft 1.21.11 Fabric" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,0,0,24" TextAlignment="Center"/>
 
+                            <!-- Prominent Telegram & Discord Links -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
+                                <Button Content="✈ Telegram" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="20,10" Height="42"
+                                        Background="#162238" BorderBrush="#0088CC" BorderThickness="1" Foreground="#38BDF8" FontWeight="Bold" FontSize="13"
+                                        Click="BtnOpenTelegram_Click" Margin="0,0,14,0"/>
+                                <Button Content="💬 Discord" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="20,10" Height="42"
+                                        Background="#1C1B38" BorderBrush="#5865F2" BorderThickness="1" Foreground="#818CF8" FontWeight="Bold" FontSize="13"
+                                        Click="BtnOpenDiscord_Click"/>
+                            </StackPanel>
+
+                            <!-- Quick Action Folders -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="📁 Папка mods" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="38"
-                                        Background="#15192B" Foreground="#FFFFFF" Click="BtnOpenMods_Click" Margin="0,0,12,0"/>
-                                <Button Content="📁 Папка .minecraft" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="38"
-                                        Background="#15192B" Foreground="#FFFFFF" Click="BtnOpenMinecraft_Click" Margin="0,0,12,0"/>
-                                <Button Content="🌐 GitHub" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="16,8" Height="38"
-                                        Background="#15192B" Foreground="#00E5FF" Click="BtnOpenGithub_Click"/>
+                                <Button Content="📁 Папка mods" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="14,6" Height="34"
+                                        Background="#131726" Foreground="#94A3B8" FontSize="12" Click="BtnOpenMods_Click" Margin="0,0,10,0"/>
+                                <Button Content="📁 Папка .minecraft" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="14,6" Height="34"
+                                        Background="#131726" Foreground="#94A3B8" FontSize="12" Click="BtnOpenMinecraft_Click" Margin="0,0,10,0"/>
+                                <Button Content="🌐 GitHub" Style="{StaticResource WindowCtrlButton}" Width="Auto" Padding="14,6" Height="34"
+                                        Background="#131726" Foreground="#94A3B8" FontSize="12" Click="BtnOpenGithub_Click"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
